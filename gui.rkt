@@ -1,47 +1,40 @@
 #lang racket
 (require racket/gui/base)
 
-(define x 2)
-(for ([i '(1 2 3)])
-  (define x i)
-    (display i))
-
-
+(define ballX 0)
+(define ballY 0)
 ; Make a frame by instantiating the frame% class
 (define frame (new frame%
-                   [label "Example"]
+                   [label "WCQTec"]
                    [width 600]
                    [height 600]))
  
 ; Make a static text message in the frame
-(define msg (new message% [parent frame]
-                          [label "No events so far..."]))
  
 ; Make a button in the frame
 (new button% [parent frame]
-             [label "Click Me"]
+             [label "Update"]
              ; Callback procedure for a button click:
              [callback (lambda (button event)
-                         (send msg set-label "Button click"))])
+                         ;(send my-canvas% draw-bitmap)
+                         (set! ballX (random 500))
+                         (set! ballY (random 500))
+                         ;(send canvas get-dc)
+                         (send canvas refresh-now)
+                         )])
  
-; Show the frame by calling its show method
-(send frame show #t)
-
-; Derive a new canvas (a drawing window) class to handle events
-(define my-canvas%
-  (class canvas% ; The base class is canvas%
-    ; Define overriding method to handle mouse events
-    (define/override (on-event event)
-      (send msg set-label "Canvas mouse"))
-    ; Define overriding method to handle keyboard events
-    (define/override (on-char event)
-      (send msg set-label "Canvas keyboard"))
-    ; Call the superclass init, passing on all init args
-    (super-new)))
  
 ; Make a canvas that handles events in the frame
-(new my-canvas% 
+(define canvas
+(new canvas% 
      [parent frame]
      [paint-callback
-      (λ (canvas dc)
-        (send dc draw-bitmap (read-bitmap "C:/Users/Usuario/Downloads/soccerball.png") 10 20))])
+      (lambda (my-canvas dc)
+        (send dc draw-bitmap (read-bitmap "C:/Users/Usuario/Downloads/ball1.png" #:backing-scale 20) ballX ballY)
+        (send dc draw-bitmap (read-bitmap "C:/Users/Usuario/Downloads/player.jpg" #:backing-scale 10) 100 100)
+        (send dc draw-bitmap (read-bitmap "C:/Users/Usuario/Downloads/player.jpg" #:backing-scale 10) 200 100)
+        )]))
+
+
+; Show the frame by calling its show method
+(send frame show #t)
