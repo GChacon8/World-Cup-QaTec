@@ -3,6 +3,13 @@
   (append (list numero)(list fuerza) (list habilidad) (list velocidad) (list desplazamiento))
   )
 
+(define (agregarPosicion listaVieja listaNueva contador1 contador2 contador3)
+  (cond
+    ((null? listaVieja) (reverse listaNueva))
+    ((> contador1 0) (agregarPosicion (cdr listaVieja) (cons (cons 1 (car listaVieja)) listaNueva) (- contador1 1) contador2 contador3))
+    ((> contador2 0) (agregarPosicion (cdr listaVieja) (cons (cons 2 (car listaVieja)) listaNueva) contador1 (- contador2 1) contador3))
+    ((> contador3 0) (agregarPosicion (cdr listaVieja) (cons (cons 3 (car listaVieja)) listaNueva) contador1 contador2 (- contador3 1)))))
+
 (define (genera_jugador numero)
   [list(jugador numero (random 11) (random 11) (random 11) (random 11))]
   )
@@ -24,15 +31,7 @@
       ;              (seleccion (cdr poblacion) (cdr elegidos)))
        ;            [else(seleccion (cdr poblacion) (append elegidos (car poblacion)))])]
         ;     (else[seleccion (cdr poblacion) elegidos])]]))
-  
-
-(define(seleccion poblacion elegidos)
-  (cond([null? poblacion] elegidos 
-        )
-    )
-  )
 
 
-(crear_equipo '() 1)
+(agregarPosicion (crear_equipo '() 1) '() 4 4 2)
 (promedio(cdar (crear_equipo '() 1)))
-(seleccion(crear_equipo '() 1) '())
