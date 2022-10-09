@@ -3,14 +3,23 @@
 
 (define ballX 0)
 (define ballY 0)
+(define player1X 100)
+(define player1Y 100)
+(define player2X 200)
+(define player2Y 100)
+(define player3X 300)
+(define player3Y 100)
+(define player4X 400)
+(define player4Y 100)
+
+(new style-list%)
+(define font (make-object font% 10 'modern 'normal))
 ; Make a frame by instantiating the frame% class
 (define frame (new frame%
                    [label "WCQTec"]
-                   [width 600]
-                   [height 600]))
- 
-; Make a static text message in the frame
- 
+                   [width 999]
+                   [height 800]))
+  
 ; Make a button in the frame
 (new button% [parent frame]
              [label "Update"]
@@ -19,6 +28,10 @@
                          ;(send my-canvas% draw-bitmap)
                          (set! ballX (random 500))
                          (set! ballY (random 500))
+                         (set! player1Y (random 300))
+                         (set! player1X (random 300))
+                         (set! player2Y (random 300))
+                         (set! player2X (random 300))
                          ;(send canvas get-dc)
                          (send canvas refresh-now)
                          )])
@@ -30,9 +43,13 @@
      [parent frame]
      [paint-callback
       (lambda (my-canvas dc)
+        (send dc draw-bitmap (read-bitmap "C:/Users/Usuario/Downloads/field.jpg") 0 0)
         (send dc draw-bitmap (read-bitmap "C:/Users/Usuario/Downloads/ball1.png" #:backing-scale 20) ballX ballY)
-        (send dc draw-bitmap (read-bitmap "C:/Users/Usuario/Downloads/player.jpg" #:backing-scale 10) 100 100)
-        (send dc draw-bitmap (read-bitmap "C:/Users/Usuario/Downloads/player.jpg" #:backing-scale 10) 200 100)
+        (send dc draw-bitmap (read-bitmap "C:/Users/Usuario/Downloads/player.png" #:backing-scale 10) player1X player1Y)
+        (send dc draw-bitmap (read-bitmap "C:/Users/Usuario/Downloads/player2.png" #:backing-scale 10) player2X player2Y)
+        (send dc set-font font)
+        (send dc draw-text "Jugador 1" player1X (+ player1Y 60))
+        (send dc draw-text "Jugador2" player2X (+ player2Y 60))
         )]))
 
 
