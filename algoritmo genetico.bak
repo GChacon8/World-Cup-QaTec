@@ -1,0 +1,24 @@
+#lang slideshow
+(define (jugador fuerza habilidad velocidad desplazamiento)
+  (append (list fuerza) (list habilidad) (list velocidad) (list desplazamiento))
+  )
+
+(define (genera_jugador)
+  [list(jugador (random 11) (random 11) (random 11) (random 11))]
+  )
+
+(define (crear_equipo jugadores i)
+  (cond[(equal? i 10) jugadores]
+       (else [crear_equipo (append jugadores (genera_jugador)) (+ i 1)])))
+
+(define (promedio jugador)
+ (/ [+ (car jugador) (cadr jugador) (caddr jugador) (cadddr jugador)] 4)
+ )
+
+
+
+
+
+
+(crear_equipo '() 2)
+(promedio(car (genera_jugador)))
