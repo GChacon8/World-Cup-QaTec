@@ -64,10 +64,14 @@
                          (set! team2Score (+ team2Score 2))
                          ;(send canvas get-dc)
                          (let ([i 0])
-                           (while (< i  100)
-                                  (set! ballX (+ ballX 1))
+                           (while (< i  10)
+                                  (sleep/yield 0.5)
+                                  (set! ballX (+ ballX 6))
+                                  (send canvas refresh-now)
                                   (set! i (add1 i))))
+                         
                          (send canvas refresh-now)
+                         
                          )])
  
 ; Make a canvas that handles events in the frame
@@ -110,6 +114,6 @@
         (send dc draw-text "Jugador 10" player10X (+ player10Y 60))
         (send dc draw-text "Jugador 11" player11X (+ player11Y 60))
         )]))
-
+(sleep/yield 1)
 ; Show the frame by calling its show method
 (send frame show #t)
