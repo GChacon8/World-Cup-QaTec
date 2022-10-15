@@ -1,5 +1,7 @@
 #lang slideshow
 
+(provide nueva-generacion)
+
 (define (jugador numero fuerza habilidad velocidad desplazamiento)
   (append (list numero) (list fuerza) (list habilidad) (list velocidad) (list desplazamiento))
   )
