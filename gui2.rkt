@@ -19,6 +19,9 @@
 ;Define variables
 (define ballX 492)
 (define ballY 365)
+(define defensa 200)
+(define medio 500)
+(define delantero 700)
 (define player1X 50)
 (define player1Y 340)
 (define player2X 180)
@@ -76,11 +79,15 @@
                          ;(drawField (send canvas get-dc))
                          (set! team1Score (+ team1Score 1))
                          (set! team2Score (+ team2Score 2))
-                         (drawPlayer (send canvas get-dc) player1X player1Y 1)
+                         ;(drawPlayer (send canvas get-dc) player1X player1Y 1)
                          ;(send canvas get-dc)
                          
                          ;(clean-canvas)
+                         ;(colocar '((1 1 3 0 5 1) (1 2 7 8 9 6) (1 3 8 0 1 5) (1 4 0 7 10 6) (2 5 7 10 1 0) (2 6 4 0 0 4) (2 7 5 8 4 1) (3 8 2 5 3 3) (3 9 6 1 5 7) (3 10 1 5 10 3) (0 11 4 2 6 9)))
+                         ;(thread prueba)
                          (thread moverBola)
+                         (thread moverJugador)
+                         ;(moverBola)
                          ;(send canvas refresh-now)
                          
                          )])
@@ -96,9 +103,44 @@
            (set! ballX (+ ballX ballVelX))
            (set! ballY (+ ballY ballVelY))
            (drawBall (send canvas get-dc) ballX ballY)
-          ;(send canvas refresh-now)
            (set! i (add1 i)))))
- 
+
+
+(define (moverJugador)
+  (define y 0)
+  (let ([i 0])
+    (while (< i 1000)
+           (set! y (+ y 2))
+           (drawPlayer (send canvas get-dc) 100 y 1)
+           )))
+
+(define (colocar equipo)
+  (define jugador (car equipo))
+  (cond [(null? equipo)
+         0
+         ]
+        [
+         (cond [(= (car jugador) 1)
+         (drawPlayer (send canvas get-dc) defensa (random 500) (cadr jugador))
+         (set! defensa (+ defensa 50))
+         (colocar (cdr equipo))]
+               [(= (car jugador) 2)
+                (drawPlayer (send canvas get-dc) medio (random 500) (cadr jugador))
+                (set! medio (+ medio 50))
+                (colocar (cdr equipo))]
+               [(= (car jugador) 3)
+                (drawPlayer (send canvas get-dc)delantero (random 500) (cadr jugador))
+                (set! delantero (+ delantero 50))
+                (colocar (cdr equipo))]
+               [(= (car jugador) 0)
+                (drawPlayer (send canvas get-dc)100 250 (cadr jugador))
+                ])
+         ]))
+
+(define (prueba)
+  (colocar '((1 1 3 0 5 1) (1 2 7 8 9 6) (1 3 8 0 1 5) (1 4 0 7 10 6) (2 5 7 10 1 0) (2 6 4 0 0 4) (2 7 5 8 4 1) (3 8 2 5 3 3) (3 9 6 1 5 7) (3 10 1 5 10 3) (0 11 4 2 6 9)))
+                         )
+
 ; Make a canvas that handles events in the frame
 (define canvas
 (new canvas% 
