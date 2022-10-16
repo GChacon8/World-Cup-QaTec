@@ -2,17 +2,17 @@
 (require racket/gui/base)
 (require "algoritmo-genetico.rkt")
 
-;(define generacion2Vieja (nueva-generacion '((1 1 3 0 5 1) (1 2 7 8 9 6) (1 3 8 0 1 5) (1 4 0 7 10 6) (2 5 7 10 1 0) (2 6 4 0 0 4) (2 7 5 8 4 1) (3 8 2 5 3 3) (3 9 6 1 5 7) (3 10 1 5 10 3) (0 11 4 2 6 9)) 1))
+(define generacion2Vieja (nueva-generacion '((1 1 3 0 5 1) (1 2 7 8 9 6) (1 3 8 0 1 5) (1 4 0 7 10 6) (2 5 7 10 1 0) (2 6 4 0 0 4) (2 7 5 8 4 1) (3 8 2 5 3 3) (3 9 6 1 5 7) (3 10 1 5 10 3) (0 11 4 2 6 9)) 1))
 ;Posicion, numero jugador, fuerza, habilidad, velocidad y desplazamiento
 ;(display (list-ref generacion2 0))
-;(define generacion2Nueva (agregarPosicion generacion2Vieja '() 4 3 3))
+(define generacion2Nueva (agregarPosicion generacion2Vieja '() 4 3 3))
 
-;(define pos1 (list-ref (list-ref generacion2Nueva 0) 0))
-;(define num1 (list-ref (list-ref generacion2Nueva 0) 1))
-;(define str1 (list-ref (list-ref generacion2Nueva 0) 2))
-;(define skill1 (list-ref (list-ref generacion2Nueva 0) 3))
-;(define speed1 (list-ref (list-ref generacion2Nueva 0) 4))
-;(define movement1 (list-ref (list-ref generacion2Nueva 0) 5))
+(define pos1 (list-ref (list-ref generacion2Nueva 0) 0))
+(define num1 (list-ref (list-ref generacion2Nueva 0) 1))
+(define str1 (list-ref (list-ref generacion2Nueva 0) 2))
+(define skill1 (list-ref (list-ref generacion2Nueva 0) 3))
+(define speed1 (list-ref (list-ref generacion2Nueva 0) 4))
+(define movement1 (list-ref (list-ref generacion2Nueva 0) 5))
 ;(display generacion2Nueva)
 ;(display str1)
 
@@ -41,8 +41,6 @@
 (define player10Y 380)
 (define player11X 430)
 (define player11Y 280)
-(define ballVelX 3)
-(define ballVelY 3)
 
 (define team1Score 0)
 (define team2Score 0)
@@ -63,8 +61,14 @@
                    [height 800]))
 
 
+
 ; Make a button in the frame
 
+(new button% [parent frame]
+             [label "Borrar"]
+             ; Callback procedure for a button click:
+             [callback (lambda (button event)
+                         (clean-canvas))])
 (new button% [parent frame]
              [label "Update"]
              ; Callback procedure for a button click:
@@ -76,28 +80,22 @@
                          ;(drawField (send canvas get-dc))
                          (set! team1Score (+ team1Score 1))
                          (set! team2Score (+ team2Score 2))
-                         (drawPlayer (send canvas get-dc) player1X player1Y 1)
+                         (drawPlayer (send canvas get-dc) player1X player1Y num1)
                          ;(send canvas get-dc)
                          
                          ;(clean-canvas)
-                         (thread moverBola)
+                         (let ([i 0])
+                           (while (< i  100)
+                                  
+                                  (set! ballX (+ ballX 3))
+                                  (drawBall (send canvas get-dc) ballX ballY)
+                                  ;(send canvas refresh-now)
+                                  (set! i (add1 i))))
+                         
+                         
                          ;(send canvas refresh-now)
                          
                          )])
-
-(define (moverBola)
-  (let ([i 0])
-    (while (< i  1000)
-           (cond
-             ((< ballX 0) (set! ballVelX 3))
-             ((> ballX 965) (set! ballVelX -3))
-             ((< ballY 0) (set! ballVelY 3))
-             ((> ballY 715) (set! ballVelY -3)))
-           (set! ballX (+ ballX ballVelX))
-           (set! ballY (+ ballY ballVelY))
-           (drawBall (send canvas get-dc) ballX ballY)
-          ;(send canvas refresh-now)
-           (set! i (add1 i)))))
  
 ; Make a canvas that handles events in the frame
 (define canvas
@@ -114,7 +112,6 @@
 
 (define (drawField dc)
   (send dc draw-bitmap (read-bitmap "./images/field.jpg") 0 0))
-
 (define (drawBall dc x y)
   (send dc draw-bitmap (read-bitmap "./images/ball1.png" #:backing-scale 10) x y)
   (send canvas on-paint)
