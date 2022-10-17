@@ -2,7 +2,7 @@
 (define (colision lista ballX ballY)
   (cond
     ((null? lista))
-    (((> ballX (caar lista)) and (> ballX (+ (caar lista) 30)) and (> ballY (cadar lista)) and (< ballY (+ (cadar lista) 30))) (disparo (caddar lista) (cadddar lista) (caddddar lista)))
+    ((and (> ballX (caar lista)) (> ballX (+ (caar lista) 30)) (> ballY (cadar lista)) (< ballY (+ (cadar lista) 30))) (disparo (caddar lista) (car (cadddr lista)) (cdar (cadddr lista))))
     (else (colision (car lista) ballX ballY))))
 
 (define (disparo equipo fuerza habilidad)
