@@ -44,11 +44,21 @@
 (define player10Y 380)
 (define player11X 430)
 (define player11Y 280)
-;(define listaX '())
 (define defensa 100)
+(define playerVel1 10)
+(define playerVel2 10)
+(define playerVel3 10)
+(define playerVel4 10)
+(define playerVel5 10)
+(define playerVel6 10)
+(define playerVel7 10)
+(define playerVel8 10)
+(define playerVel9 10)
+(define playerVel10 10)
+(define playerVel11 10)
 
-(define playerVel 10)
-(define ballVel 10)
+(define ballVelX 10)
+(define ballVelY 10)
 
 (define team1Score 0)
 (define team2Score 0)
@@ -74,23 +84,73 @@
 ; Make a button in the frame
 (define (checkPlayer)
   (cond [(<= player1Y 100)
-         (set! playerVel (* playerVel -1))]
+         (set! playerVel1 (* playerVel1 -1))]
         [(>= player1Y 600)
-         (set! playerVel (* playerVel -1))]
-        [(<= player2Y 100)
-         (set! playerVel (* playerVel -1))]
+         (set! playerVel1 (* playerVel1 -1))])
+
+  (cond [(<= player2Y 100)
+         (set! playerVel2 (* playerVel2 -1))]
         [(>= player2Y 600)
-         (set! playerVel (* playerVel -1))]
-        [(<= player3Y 100)
-         (set! playerVel (* playerVel -1))]
+         (set! playerVel2 (* playerVel2 -1))])
+
+  (cond [(<= player3Y 100)
+         (set! playerVel3 (* playerVel3 -1))]
         [(>= player3Y 600)
-         (set! playerVel (* playerVel -1))]
-        ))
+         (set! playerVel3 (* playerVel3 -1))])
+
+  (cond [(<= player4Y 100)
+         (set! playerVel4 (* playerVel4 -1))]
+        [(>= player4Y 600)
+         (set! playerVel4 (* playerVel4 -1))])
+
+  (cond [(<= player5Y 100)
+         (set! playerVel5 (* playerVel5 -1))]
+        [(>= player5Y 600)
+         (set! playerVel5 (* playerVel5 -1))])
+
+  (cond [(<= player6Y 100)
+         (set! playerVel6 (* playerVel6 -1))]
+        [(>= player6Y 650)
+         (set! playerVel6 (* playerVel6 -1))])
+
+  (cond [(<= player7Y 100)
+         (set! playerVel7 (* playerVel7 -1))]
+        [(>= player7Y 600)
+         (set! playerVel7 (* playerVel7 -1))])
+
+  (cond [(<= player8Y 100)
+         (set! playerVel8 (* playerVel8 -1))]
+        [(>= player8Y 650)
+         (set! playerVel8 (* playerVel8 -1))])
+
+  (cond [(<= player9Y 100)
+         (set! playerVel9 (* playerVel9 -1))]
+        [(>= player9Y 600)
+         (set! playerVel9 (* playerVel9 -1))])
+
+  (cond [(<= player10Y 100)
+         (set! playerVel10 (* playerVel10 -1))]
+        [(>= player10Y 600)
+         (set! playerVel10 (* playerVel10 -1))])
+  
+  (cond [(<= player11Y 100)
+         (set! playerVel11 (* playerVel11 -1))]
+        [(>= player11Y 600)
+         (set! playerVel11 (* playerVel11 -1))])
+  )
+
+  
+         
+
 (define (checkBall)
   (cond [(<= ballX 0)
-         (set! ballVel (* ballVel -1))]
-        [(>= ballX 900)
-         (set! ballVel (* ballVel -1))])
+         (set! ballVelX (* ballVelX -1))]
+        [(>= ballX 920)
+         (set! ballVelX (* ballVelX -1))])
+  (cond [(<= ballY 0)
+         (set! ballVelY (* ballVelY -1))]
+        [(>= ballY 720)
+         (set! ballVelY (* ballVelY -1))])
   )
 (new button% [parent frame]
              [label "Update"]
@@ -104,10 +164,19 @@
                                   (sleep/yield 0.005)
                                   (thread checkPlayer)
                                   (thread checkBall)
-                                  (set! ballX (+ ballX ballVel))
-                                  (set! player1Y (+ player1Y playerVel))
-                                  (set! player2Y (+ player2Y playerVel))
-                                  (set! player3Y (+ player3Y playerVel))
+                                  (set! ballX (+ ballX ballVelX))
+                                  (set! ballY (+ ballY ballVelY))
+                                  (set! player1Y (+ player1Y playerVel1))
+                                  (set! player2Y (+ player2Y playerVel2))
+                                  (set! player3Y (+ player3Y playerVel3))
+                                  (set! player4Y (+ player4Y playerVel4))
+                                  (set! player5Y (+ player5Y playerVel5))
+                                  (set! player6Y (+ player6Y playerVel6))
+                                  (set! player7Y (+ player7Y playerVel7))
+                                  (set! player8Y (+ player8Y playerVel8))
+                                  (set! player9Y (+ player9Y playerVel9))
+                                  (set! player10Y (+ player10Y playerVel10))
+                                  (set! player11Y (+ player11Y playerVel11))
                                   (send canvas refresh-now)
                                   (set! i (add1 i))))
                          
