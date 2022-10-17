@@ -47,6 +47,9 @@
 (define ballVelX 3)
 (define ballVelY 3)
 
+
+
+;(100 150 200)
 (define team1Score 0)
 (define team2Score 0)
 
@@ -86,45 +89,48 @@
                          ;(colocar '((1 1 3 0 5 1) (1 2 7 8 9 6) (1 3 8 0 1 5) (1 4 0 7 10 6) (2 5 7 10 1 0) (2 6 4 0 0 4) (2 7 5 8 4 1) (3 8 2 5 3 3) (3 9 6 1 5 7) (3 10 1 5 10 3) (0 11 4 2 6 9)))
                          ;(thread prueba)
                          ;(thread moverBola_aux)
-                         (thread moverJugador)
                          ;(thread moverJugador)
-                         (thread moverBola)
+                         ;(thread moverJugador)
+                         ;(thread moverBola)
                          ;(send canvas refresh-now)
-                         
+                         (thread moverTodo)
+                         ;(prueba)
                          )])
 
+
+
+
+(define (moverJugador y)
+  (drawPlayer (send canvas get-dc) 100 y 1)
+           (drawPlayer (send canvas get-dc) player1X player1Y 1)
+           (drawPlayer (send canvas get-dc) player1X player2Y 2)
+           (drawPlayer (send canvas get-dc) player1X player3Y 3)
+           (drawPlayer (send canvas get-dc) player1X player4Y 4)
+           (drawPlayer (send canvas get-dc) player1X player5Y 5)
+           (drawPlayer (send canvas get-dc) player1X player6Y 6)
+           (drawPlayer (send canvas get-dc) player1X player7Y 7)
+           (drawPlayer (send canvas get-dc) player1X player8Y 8)
+  )
+
 (define (moverBola)
-  (let ([i 0])
-    (while (< i  1000)
-           (cond
-             ((< ballX 0) (set! ballVelX 3))
-             ((> ballX 965) (set! ballVelX -3))
-             ((< ballY 0) (set! ballVelY 3))
-             ((> ballY 715) (set! ballVelY -3)))
-           (set! ballX (+ ballX ballVelX))
-           (set! ballY (+ ballY ballVelY))
-           (drawBall ballX ballY)
-           ;(cond [(= (remainder i 5) 0) (clean-canvas)])
-           (set! i (add1 i)))))
+  (cond
+      ((< ballX 0) (set! ballVelX 3))
+      ((> ballX 965) (set! ballVelX -3))
+      ((< ballY 0) (set! ballVelY 3))
+      ((> ballY 715) (set! ballVelY -3)))
+  (set! ballX (+ ballX ballVelX))
+  (set! ballY (+ ballY ballVelY))
+  (drawBall ballX ballY))
+  
 
-
-(define (moverJugador)
-  (define y 0)
+(define (moverTodo)
   (let ([i 0])
-    (while (< i 100)
-           (set! y (+ y 2))
-           (drawPlayer (send canvas get-dc) 100 y 1)
-           (drawPlayer (send canvas get-dc) 200 y 2)
-           (drawPlayer (send canvas get-dc) 300 y 3)
-           (drawPlayer (send canvas get-dc) 400 y 3)
-           (drawPlayer (send canvas get-dc) 500 y 3)
-           (drawPlayer (send canvas get-dc) 600 y 3)
-           (drawPlayer (send canvas get-dc) 700 y 3)
-           (drawPlayer (send canvas get-dc) 800 y 3)
-           (drawPlayer (send canvas get-dc) 900 y 3)
-           (set! i (add1 i))
-           ;(cond [(= (remainder i 5) 0) (clean-canvas)])
-           )))
+  (while (< i 10000)
+         (moverJugador i)
+         (moverBola)
+         (clean-canvas)
+         (set! i (add1 i))
+  )))
 
 (define (colocar equipo)
   (define jugador (car equipo))
@@ -133,6 +139,9 @@
          ]
         [
          (cond [(= (car jugador) 1)
+                ;set player1x defensa
+                ;+ defensa 50
+                ;set player2x defensa 
          (drawPlayer (send canvas get-dc) defensa (random 500) (cadr jugador))
          (set! defensa (+ defensa 50))
          (colocar (cdr equipo))]
@@ -164,7 +173,7 @@
 
 (define (drawPlayer dc x y num)
   ;(send dc draw-bitmap (read-bitmap "./images/player2.png" #:backing-scale 10) x y)
-  (send dc draw-text (string-append "Jugador" (number->string num)) x (+ y 60)))
+  (send dc draw-text (string-append "J" (number->string num)) x (+ y 60)))
 
 (define (drawField dc)
   (send dc draw-bitmap (read-bitmap "./images/field.jpg") 0 0))
