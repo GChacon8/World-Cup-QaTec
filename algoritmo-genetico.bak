@@ -1,6 +1,6 @@
 #lang slideshow
 
-(provide nueva-generacion crear_equipo agregarPosicion)
+(provide nueva-generacion)
 
 (define (jugador numero fuerza habilidad velocidad desplazamiento)
   (append (list numero) (list fuerza) (list habilidad) (list velocidad) (list desplazamiento))
@@ -85,4 +85,4 @@
 ;(reproduccion '((1 2 7 8 9 6) (1 4 0 7 10 6) (2 5 7 10 1 0)) '() 2)
 ;(cambiar '(1 2 3 4) '() 2 7 0)
 ;(mutacion '(0 2 6 6) 0)
-;(nueva-generacion '((1 1 3 0 5 1) (1 2 7 8 9 6) (1 3 8 0 1 5) (1 4 0 7 10 6) (2 5 7 10 1 0) (2 6 4 0 0 4) (2 7 5 8 4 1) (3 8 2 5 3 3) (3 9 6 1 5 7) (3 10 1 5 10 3) (0 11 4 2 6 9)) 1)
+(nueva-generacion '((1 1 3 0 5 1) (1 2 7 8 9 6) (1 3 8 0 1 5) (1 4 0 7 10 6) (2 5 7 10 1 0) (2 6 4 0 0 4) (2 7 5 8 4 1) (3 8 2 5 3 3) (3 9 6 1 5 7) (3 10 1 5 10 3) (0 11 4 2 6 9)) 1)

@@ -1,0 +1,12 @@
+#lang racket
+(require racket/gui/base)
+(require "algoritmo-genetico.rkt")
+
+(new style-list%)
+(define font (make-object font% 10 'modern 'normal))
+(define fontScore (make-object font% 9 'modern 'normal 'bold))
+; Make a frame by instantiating the frame% class
+(define frame (new frame%
+                   [label "WCQTec"]
+                   [width 999]
+                   [height 800]))

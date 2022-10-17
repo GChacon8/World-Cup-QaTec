@@ -6,20 +6,10 @@
 
 
 (define generacion2Vieja (nueva-generacion '((1 1 3 0 5 1) (1 2 7 8 9 6) (1 3 8 0 1 5) (1 4 0 7 10 6) (2 5 7 10 1 0) (2 6 4 0 0 4) (2 7 5 8 4 1) (3 8 2 5 3 3) (3 9 6 1 5 7) (3 10 1 5 10 3) (0 11 4 2 6 9)) 1))
-;Posicion, numero jugador, fuerza, habilidad, velocidad y desplazamiento
-;(display (list-ref generacion2 0))
-;(define generacion2Nueva (agregarPosicion generacion2Vieja '() 4 3 3))
 
-;(define pos1 (list-ref (list-ref generacion2Nueva 0) 0))
-;(define num1 (list-ref (list-ref generacion2Nueva 0) 1))
-;(define str1 (list-ref (list-ref generacion2Nueva 0) 2))
-;(define skill1 (list-ref (list-ref generacion2Nueva 0) 3))
-;(define speed1 (list-ref (list-ref generacion2Nueva 0) 4))
-;(define movement1 (list-ref (list-ref generacion2Nueva 0) 5))
-;(display generacion2Nueva)
-;(display str1)
 
 ;Define variables
+(define jugadores (agregarPosicion (crear_equipo '() 1) '() 5 2 3))
 (define ballX 492)
 (define ballY 365)
 (define player1X 50)
@@ -44,18 +34,20 @@
 (define player10Y 380)
 (define player11X 430)
 (define player11Y 280)
-(define defensa 100)
-(define playerVel1 10)
-(define playerVel2 10)
-(define playerVel3 10)
-(define playerVel4 10)
-(define playerVel5 10)
-(define playerVel6 10)
-(define playerVel7 10)
-(define playerVel8 10)
-(define playerVel9 10)
-(define playerVel10 10)
-(define playerVel11 10)
+(define defensa 50)
+(define medio 350)
+(define delantero 550)
+(define playerVel1 (list-ref (list-ref jugadores 0) 3))
+(define playerVel2 (list-ref (list-ref jugadores 1) 3))
+(define playerVel3 (list-ref (list-ref jugadores 2) 3))
+(define playerVel4 (list-ref (list-ref jugadores 3) 3))
+(define playerVel5 (list-ref (list-ref jugadores 4) 3))
+(define playerVel6 (list-ref (list-ref jugadores 5) 3))
+(define playerVel7 (list-ref (list-ref jugadores 6) 3))
+(define playerVel8 (list-ref (list-ref jugadores 7) 3))
+(define playerVel9 (list-ref (list-ref jugadores 8) 3))
+(define playerVel10 (list-ref (list-ref jugadores 9) 3))
+(define playerVel11 (list-ref (list-ref jugadores 10) 3))
 
 (define ballVelX 10)
 (define ballVelY 10)
@@ -159,6 +151,7 @@
                          (set! team1Score (+ team1Score 1))
                          (set! team2Score (+ team2Score 2))
                          
+                         
                          (let ([i 0])
                            (while (< i  500)
                                   (sleep/yield 0.005)
@@ -181,6 +174,7 @@
                                   (set! i (add1 i))))
                          
                          (send canvas refresh-now)
+                         (set! jugadores (nueva-generacion jugadores 1))
                          
                          )])
  
@@ -194,8 +188,10 @@
         (send dc set-pen "black" 1 'solid)
         (send dc draw-rectangle 0 0 999 800)
         (send (send canvas get-dc) erase)
-        (define listaX (colocar '((1 1 3 0 5 1) (1 2 7 8 9 6) (1 3 8 0 1 5) (1 4 0 7 10 6) (2 5 7 10 1 0) (2 6 4 0 0 4) (2 7 5 8 4 1) (3 8 2 5 3 3) (3 9 6 1 5 7) (3 10 1 5 10 3) (0 11 4 2 6 9)) '()))
-        (set! defensa 100)
+        (define listaX (colocar jugadores '()))
+        (set! defensa 50)
+        (set! medio 350)
+        (set! delantero 550)
         (send (send canvas get-dc) draw-rectangle 0 0 999 800)
         (send (send canvas get-dc) draw-rectangle (list-ref listaX 0) player1Y 30 30)
         (send (send canvas get-dc) draw-rectangle (list-ref listaX 1) player2Y 30 30)
@@ -226,13 +222,13 @@
          (cons listaX defensa)
          (colocar (cdr equipo) (append listaX (list defensa)))]
                [(= (car (car equipo)) 2) 
-                (set! defensa (+ defensa 50))
+                (set! medio (+ medio 50))
                
-                (colocar (cdr equipo) (append listaX (list defensa)))]
+                (colocar (cdr equipo) (append listaX (list medio)))]
                [(= (car (car equipo)) 3)
-                (set! defensa (+ defensa 50))
+                (set! delantero (+ delantero 50))
                
-                (colocar (cdr equipo) (append listaX (list defensa)))]
+                (colocar (cdr equipo) (append listaX (list delantero)))]
                [(= (car (car equipo)) 0)
                 (colocar (cdr equipo) (append listaX (list 50)))]
                )
