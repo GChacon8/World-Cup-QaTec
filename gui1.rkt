@@ -37,7 +37,7 @@
 (define defensa 50)
 (define medio 350)
 (define delantero 550)
-(define playerVel1 (list-ref (list-ref jugadores 0) 3))
+(define playerVel1 0)
 (define playerVel2 (list-ref (list-ref jugadores 1) 3))
 (define playerVel3 (list-ref (list-ref jugadores 2) 3))
 (define playerVel4 (list-ref (list-ref jugadores 3) 3))
@@ -131,7 +131,18 @@
          (set! playerVel11 (* (abs playerVel11) -1))])
   )
 
-  
+(define (colisionPrueba)
+  (cond
+    ((and (> ballX player1X) (< ballX (+ player1X 30)) (> ballY player1Y) (< ballY (+ player1Y 30))) (disparo))
+    (else (quote 0))))
+
+(define (disparo)
+  (set! ballVelX 10)
+  (set! ballVelY 0)
+  (sleep 1)
+  (set! ballVelX 0)
+  (set! ballVelY 0)
+  )
          
 
 (define (checkBall)
@@ -157,6 +168,7 @@
                                   (sleep/yield 0.005)
                                   (thread checkPlayer)
                                   (thread checkBall)
+                                  (thread colisionPrueba)
                                   (set! ballX (+ ballX ballVelX))
                                   (set! ballY (+ ballY ballVelY))
                                   (set! player1Y (+ player1Y playerVel1))
