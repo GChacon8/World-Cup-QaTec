@@ -6,7 +6,7 @@
 
 
 (define generacion2Vieja (nueva-generacion '((1 1 3 0 5 1) (1 2 7 8 9 6) (1 3 8 0 1 5) (1 4 0 7 10 6) (2 5 7 10 1 0) (2 6 4 0 0 4) (2 7 5 8 4 1) (3 8 2 5 3 3) (3 9 6 1 5 7) (3 10 1 5 10 3) (0 11 4 2 6 9)) 1))
-
+;(define jugador1 (new jugador% (posicion 1) (numero 1) (fuerza 1) (habilidad 1) (velocidad 7) (desplazamiento 1)))
 
 ;Define variables
 (define jugadores (agregarPosicion (crear_equipo '() 1) '() 5 2 3))
@@ -47,7 +47,7 @@
 (define playerVel8 (list-ref (list-ref jugadores 7) 3))
 (define playerVel9 (list-ref (list-ref jugadores 8) 3))
 (define playerVel10 (list-ref (list-ref jugadores 9) 3))
-(define playerVel11 (list-ref (list-ref jugadores 10) 3))
+(define playerVel11 45)
 
 (define ballVelX 10)
 (define ballVelY 10)
@@ -75,60 +75,60 @@
   
 ; Make a button in the frame
 (define (checkPlayer)
-  (cond [(<= player1Y 100)
-         (set! playerVel1 (* playerVel1 -1))]
-        [(>= player1Y 600)
-         (set! playerVel1 (* playerVel1 -1))])
+  (cond [(< player1Y 100)
+         (set! playerVel1 (abs playerVel1))]
+        [(> player1Y 600)
+         (set! playerVel1 (* (abs playerVel1) -1))])
 
-  (cond [(<= player2Y 100)
-         (set! playerVel2 (* playerVel2 -1))]
-        [(>= player2Y 600)
-         (set! playerVel2 (* playerVel2 -1))])
+  (cond [(< player2Y 100)
+         (set! playerVel2 (abs playerVel2))]
+        [(> player2Y 600)
+         (set! playerVel2 (* (abs playerVel2) -1))])
 
-  (cond [(<= player3Y 100)
-         (set! playerVel3 (* playerVel3 -1))]
-        [(>= player3Y 600)
-         (set! playerVel3 (* playerVel3 -1))])
+  (cond [(< player3Y 100)
+         (set! playerVel3 (abs playerVel3))]
+        [(> player3Y 600)
+         (set! playerVel3 (* (abs playerVel3) -1))])
 
-  (cond [(<= player4Y 100)
-         (set! playerVel4 (* playerVel4 -1))]
-        [(>= player4Y 600)
-         (set! playerVel4 (* playerVel4 -1))])
+  (cond [(< player4Y 100)
+         (set! playerVel4 (abs playerVel4))]
+        [(> player4Y 600)
+         (set! playerVel4 (* (abs playerVel4) -1))])
 
-  (cond [(<= player5Y 100)
-         (set! playerVel5 (* playerVel5 -1))]
-        [(>= player5Y 600)
-         (set! playerVel5 (* playerVel5 -1))])
+  (cond [(< player5Y 100)
+         (set! playerVel5 (abs playerVel5))]
+        [(> player5Y 600)
+         (set! playerVel5 (* (abs playerVel5) -1))])
 
-  (cond [(<= player6Y 100)
-         (set! playerVel6 (* playerVel6 -1))]
-        [(>= player6Y 650)
-         (set! playerVel6 (* playerVel6 -1))])
+  (cond [(< player6Y 100)
+         (set! playerVel6 (abs playerVel6))]
+        [(> player6Y 650)
+         (set! playerVel6 (* (abs playerVel6) -1))])
 
-  (cond [(<= player7Y 100)
-         (set! playerVel7 (* playerVel7 -1))]
-        [(>= player7Y 600)
-         (set! playerVel7 (* playerVel7 -1))])
+  (cond [(< player7Y 100)
+         (set! playerVel7 (abs playerVel7))]
+        [(> player7Y 600)
+         (set! playerVel7 (* (abs playerVel7) -1))])
 
-  (cond [(<= player8Y 100)
-         (set! playerVel8 (* playerVel8 -1))]
-        [(>= player8Y 650)
-         (set! playerVel8 (* playerVel8 -1))])
+  (cond [(< player8Y 100)
+         (set! playerVel8 (abs playerVel8))]
+        [(> player8Y 650)
+         (set! playerVel8 (* (abs playerVel8) -1))])
 
-  (cond [(<= player9Y 100)
-         (set! playerVel9 (* playerVel9 -1))]
-        [(>= player9Y 600)
-         (set! playerVel9 (* playerVel9 -1))])
+  (cond [(< player9Y 100)
+         (set! playerVel9 (abs playerVel9))]
+        [(> player9Y 600)
+         (set! playerVel9 (* (abs playerVel9) -1))])
 
-  (cond [(<= player10Y 100)
-         (set! playerVel10 (* playerVel10 -1))]
-        [(>= player10Y 600)
-         (set! playerVel10 (* playerVel10 -1))])
+  (cond [(< player10Y 100)
+         (set! playerVel10 (abs playerVel10 ))]
+        [(> player10Y 600)
+         (set! playerVel10 (* (abs playerVel10) -1))])
   
-  (cond [(<= player11Y 100)
-         (set! playerVel11 (* playerVel11 -1))]
-        [(>= player11Y 600)
-         (set! playerVel11 (* playerVel11 -1))])
+  (cond [(< player11Y 100)
+         (set! playerVel11 (abs playerVel11))]
+        [(> player11Y 600)
+         (set! playerVel11 (* (abs playerVel11) -1))])
   )
 
   
@@ -174,7 +174,7 @@
                                   (set! i (add1 i))))
                          
                          (send canvas refresh-now)
-                         (set! jugadores (nueva-generacion jugadores 1))
+                         ;(set! jugadores (nueva-generacion jugadores 1))
                          
                          )])
  
@@ -233,6 +233,7 @@
                 (colocar (cdr equipo) (append listaX (list 50)))]
                )
          ]))
+
 
 ; Show the frame by calling its show method
 (send frame show #t)

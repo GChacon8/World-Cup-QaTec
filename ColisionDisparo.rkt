@@ -7,4 +7,4 @@
 
 (define (disparo equipo fuerza habilidad)
   (!set ballVelX fuerza)
-  (!set ballVelY habilidad))
+  (!set ballVelY habilidad)) 

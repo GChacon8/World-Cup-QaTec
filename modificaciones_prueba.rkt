@@ -24,6 +24,25 @@
         )]
         ))
 
+(define jugador%
+  (class object%
+    (init-field posicion
+                numero
+                fuerza
+                habilidad
+                velocidad
+                desplazamiento)
+    (define/public (get-posicion) posicion)
+    (define/public (get-numero) numero)
+    (define/public (get-fuerza) fuerza)
+    (define/public (get-habilidad) habilidad)
+    (define/public (get-velocidad) velocidad)
+    (define/public (get-desplazamiento) desplazamiento)
+    (super-new)))
+
+
+(define jugador (new jugador% (posicion 1) (numero 1) (fuerza 1) (habilidad 1) (velocidad 1) (desplazamiento 1)))
+
 (define marco%
   (class object%
     (init-field widht
@@ -32,6 +51,9 @@
     (super-new)))
 
 
-(define marco (new marco% [widht 1200] [height 800]))
+(define marco
+  (new marco%
+       [widht 1200]
+       [height 800]))
 (send marco create-canvas)
 (send frame show #t)
