@@ -86,7 +86,10 @@
 
 
 (define (QaTec formaciones generaciones)
-  (display (colocar (agregarPosicion (crear_equipo '() 1) '() 5 3 2) '() 100 500 900 1))
+  (colocar (agregarPosicion (crear_equipo '() 1) '() 5 3 2) '() 100 500 900 1)
+  
+  
+  
   ;(send frame show #t)
   ;(send canvas refresh-now)
   
@@ -282,5 +285,7 @@
         (send dc draw-rectangle (list-ref X-equipo-2 i) (list-ref Y-equipo-2 i) 30 30)
         (dibujar (+ i 1) dc)))
   )
+
+
 
 (QaTec '((4 3 3) (5 3 2)) 15)
