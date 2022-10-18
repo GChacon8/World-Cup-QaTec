@@ -222,7 +222,7 @@
         (send dc draw-arc 1315 365 70 70 (/ pi 2) (/ (* 3 pi) 2))
         (send dc draw-arc 600 300 200 200 0 (* 2 pi))
         
-        (send dc set-pen "black" 0 'solid)
+        (send dc set-pen "red" 0 'solid)
         (send (send canvas get-dc) draw-rectangle (list-ref listaX 0) player1Y 30 30)
         (send (send canvas get-dc) draw-rectangle (list-ref listaX 1) player2Y 30 30)
         (send (send canvas get-dc) draw-rectangle (list-ref listaX 2) player3Y 30 30)
@@ -234,9 +234,9 @@
         (send (send canvas get-dc) draw-rectangle (list-ref listaX 8) player9Y 30 30)
         (send (send canvas get-dc) draw-rectangle (list-ref listaX 9) player10Y 30 30)
         (send (send canvas get-dc) draw-rectangle (list-ref listaX 10) player11Y 30 30)
-        (send (send canvas get-dc) draw-ellipse ballX ballY 20 20)
         
-        (send dc set-pen "white" 1 'solid)
+        
+        (send dc set-pen "blue" 1 'solid)
         (define listaY (colocar jugadores '() 1260 860 460 -1))
         (send (send canvas get-dc) draw-rectangle (list-ref listaY 0) player1Y 30 30)
         (send (send canvas get-dc) draw-rectangle (list-ref listaY 1) player2Y 30 30)
@@ -250,6 +250,8 @@
         (send (send canvas get-dc) draw-rectangle (list-ref listaY 9) player10Y 30 30)
         (send (send canvas get-dc) draw-rectangle 1320 player11Y 30 30)
         
+        (send dc set-pen "black" 1 'solid)
+        (send (send canvas get-dc) draw-ellipse ballX ballY 20 20)
         
         (send dc draw-text "Jugador 1" (- (list-ref listaX 0) 20) (+ player1Y 35))
         
