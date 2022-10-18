@@ -37,7 +37,7 @@
 (define defensa 50)
 (define medio 350)
 (define delantero 550)
-(define playerVel1 0)
+(define playerVel1 3)
 (define playerVel2 (list-ref (list-ref jugadores 1) 3))
 (define playerVel3 (list-ref (list-ref jugadores 2) 3))
 (define playerVel4 (list-ref (list-ref jugadores 3) 3))
@@ -133,7 +133,7 @@
 
 (define (colisionPrueba)
   (cond
-    ((and (> ballX player1X) (< ballX (+ player1X 30)) (> ballY player1Y) (< ballY (+ player1Y 30))) (disparo))
+    ((and (> (+ ballX 11) (+ player1X 10)) (< (- ballX 11) (+ player1X 40)) (> (+ ballY 11) (+ player1Y 10)) (< (- ballY 11) (+ player1Y 40))) (disparo))
     (else (quote 0))))
 
 (define (disparo)
@@ -146,14 +146,14 @@
          
 
 (define (checkBall)
-  (cond [(<= ballX 0)
-         (set! ballVelX (* ballVelX -1))]
-        [(>= ballX 920)
-         (set! ballVelX (* ballVelX -1))])
-  (cond [(<= ballY 0)
-         (set! ballVelY (* ballVelY -1))]
-        [(>= ballY 720)
-         (set! ballVelY (* ballVelY -1))])
+  (cond [(< ballX 0)
+         (set! ballVelX (abs (* ballVelX -1)))]
+        [(> ballX 920)
+         (set! ballVelX (* (abs ballVelX) -1))])
+  (cond [(< ballY 0)
+         (set! ballVelY (abs (* ballVelY -1)))]
+        [(> ballY 720)
+         (set! ballVelY (* (abs ballVelY) -1))])
   )
 (new button% [parent frame]
              [label "Update"]
