@@ -26,7 +26,7 @@
 
 (define (crear-lista-velocidad i lista)
   (cond ((< i 11)
-        (crear-lista-velocidad (+ i 1) (cons (list-ref (list-ref jugadores i) 3) lista)))
+        (crear-lista-velocidad (+ i 1) (cons (list-ref (list-ref equipo1 i) 3) lista)))
         (else lista)
   ))
   
@@ -36,7 +36,7 @@
 ;(define jugador1 (new jugador% (posicion 1) (numero 1) (fuerza 1) (habilidad 1) (velocidad 7) (desplazamiento 1)))
 
 ;Define variables
-(define jugadores (agregarPosicion (crear_equipo '() 1) '() 5 3 2))
+(define equipo1 (agregarPosicion (crear_equipo '() 1) '() 5 3 2))
 (define ballX 492)
 (define ballY 365)
 (define player1X 50)
@@ -63,8 +63,8 @@
 (define player11Y 300)
 (define Y-equipo-1 (list 300 300 300 300 300 300 300 300 300 300 300))
 (define Y-equipo-2 (list 300 300 300 300 300 300 300 300 300 300 300))
-(define X-equipo-1 (colocar jugadores '() 100 500 900 1))
-(define X-equipo-2 (colocar jugadores '() 1260 860 460 -1))
+(define X-equipo-1 (colocar equipo1 '() 100 500 900 1))
+(define X-equipo-2 (colocar equipo1 '() 1260 860 460 -1))
 (define velocidad-equipo-1 (crear-lista-velocidad 0 '()))
 (define defensa 50)
 (define medio 350)
@@ -161,7 +161,7 @@
                                   (set! i (add1 i))))
                          
                          (send canvas refresh-now)
-                         ;(set! jugadores (nueva-generacion jugadores 1))
+                         ;(set! equipo1 (nueva-generacion equipo1 1))
                          
                          )])
 
@@ -205,22 +205,8 @@
         (send dc draw-arc 1315 365 70 70 (/ pi 2) (/ (* 3 pi) 2))
         (send dc draw-arc 600 300 200 200 0 (* 2 pi))
         
-        (dibujar 0 (send canvas get-dc) "red")
-        
-        
-        (send dc set-pen "blue" 1 'solid)
-        (send (send canvas get-dc) draw-rectangle (list-ref X-equipo-2 0) player1Y 30 30)
-        (send (send canvas get-dc) draw-rectangle (list-ref X-equipo-2 1) player2Y 30 30)
-        (send (send canvas get-dc) draw-rectangle (list-ref X-equipo-2 2) player3Y 30 30)
-        (send (send canvas get-dc) draw-rectangle (list-ref X-equipo-2 3) player4Y 30 30)
-        (send (send canvas get-dc) draw-rectangle (list-ref X-equipo-2 4) player5Y 30 30)
-        (send (send canvas get-dc) draw-rectangle (list-ref X-equipo-2 5) player6Y 30 30)
-        (send (send canvas get-dc) draw-rectangle (list-ref X-equipo-2 6) player7Y 30 30)
-        (send (send canvas get-dc) draw-rectangle (list-ref X-equipo-2 7) player8Y 30 30)
-        (send (send canvas get-dc) draw-rectangle (list-ref X-equipo-2 8) player9Y 30 30)
-        (send (send canvas get-dc) draw-rectangle (list-ref X-equipo-2 9) player10Y 30 30)
-        (send (send canvas get-dc) draw-rectangle 1320 player11Y 30 30)
-        
+        (dibujar 0 (send canvas get-dc))
+                
         (send dc set-pen "black" 1 'solid)
         (send (send canvas get-dc) draw-ellipse ballX ballY 20 20)
         
@@ -229,11 +215,15 @@
         
         )]
         ))
-(define (dibujar i dc color)
+
+
+(define (dibujar i dc)
   (cond ((< i 11)
-         (send dc set-pen color 0 'solid)
+         (send dc set-pen "red" 0 'solid)
         (send dc draw-rectangle (list-ref X-equipo-1 i) (list-ref Y-equipo-1 i) 30 30)
-        (dibujar (+ i 1) dc color)))
+        (send dc set-pen "blue" 0 'solid)
+        (send dc draw-rectangle (list-ref X-equipo-2 i) (list-ref Y-equipo-2 i) 30 30)
+        (dibujar (+ i 1) dc)))
   )
 
 
