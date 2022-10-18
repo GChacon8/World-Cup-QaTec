@@ -86,8 +86,9 @@
 
 
 (define (QaTec formaciones generaciones)
-  (send frame show #t)
-  (send canvas refresh-now)
+  (display (colocar (agregarPosicion (crear_equipo '() 1) '() 5 3 2) '() 100 500 900 1))
+  ;(send frame show #t)
+  ;(send canvas refresh-now)
   
   )
 
@@ -240,7 +241,7 @@
         (send dc draw-arc 1315 365 70 70 (/ pi 2) (/ (* 3 pi) 2))
         (send dc draw-arc 600 300 200 200 0 (* 2 pi))
         
-        (dibujar 0 (send canvas get-dc) "red")
+        ;(dibujar 0 (send canvas get-dc) )
 
         (send dc set-brush "gray" 'solid)
         (send dc set-pen "gray" 4 'solid)
@@ -273,11 +274,13 @@
         )]
         ))
 
-(define (dibujar i dc color)
+(define (dibujar i dc X-equipo-1 Y-equipo-1  X-equipo-2 Y-equipo-2)
   (cond ((< i 11)
-         (send dc set-pen color 0 'solid)
+         (send dc set-pen "red" 0 'solid)
         (send dc draw-rectangle (list-ref X-equipo-1 i) (list-ref Y-equipo-1 i) 30 30)
-        (dibujar (+ i 1) dc color)))
+        (send dc set-pen "blue" 0 'solid)
+        (send dc draw-rectangle (list-ref X-equipo-2 i) (list-ref Y-equipo-2 i) 30 30)
+        (dibujar (+ i 1) dc)))
   )
 
 (QaTec '((4 3 3) (5 3 2)) 15)
