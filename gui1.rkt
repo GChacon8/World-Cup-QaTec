@@ -2,7 +2,33 @@
 (require racket/gui/base)
 (require "algoritmo-genetico.rkt")
 
-;(nueva-generacion '((1 1 3 0 5 1) (1 2 7 8 9 6) (1 3 8 0 1 5) (1 4 0 7 10 6) (2 5 7 10 1 0) (2 6 4 0 0 4) (2 7 5 8 4 1) (3 8 2 5 3 3) (3 9 6 1 5 7) (3 10 1 5 10 3) (0 11 4 2 6 9)) 1)
+(define (colocar equipo X-equipo-1 defensa medio delantero tipo)
+  (cond [(null? equipo)
+         X-equipo-1
+         ]
+        [
+         (cond [(= (car (car equipo)) 1) 
+         ;(set! defensa (+ defensa 50))
+         (cons X-equipo-1 defensa)
+         (colocar (cdr equipo) (append X-equipo-1 (list defensa)) (+ defensa (* 80 tipo)) medio delantero tipo)]
+               [(= (car (car equipo)) 2) 
+                ;(set! medio (+ medio 50))
+               
+                (colocar (cdr equipo) (append X-equipo-1 (list medio)) defensa (+ medio (* 80 tipo)) delantero tipo)]
+               [(= (car (car equipo)) 3)
+                ;(set! delantero (+ delantero 50))
+               
+                (colocar (cdr equipo) (append X-equipo-1 (list delantero)) defensa medio (+ (* 80 tipo) delantero) tipo)]
+               [(= (car (car equipo)) 0)
+                (colocar (cdr equipo) (append X-equipo-1 (list 50)) defensa medio delantero tipo)]
+               )
+         ]))
+
+(define (crear-lista-velocidad i lista)
+  (cond ((< i 11)
+        (crear-lista-velocidad (+ i 1) (cons )))
+  ))
+  )
 
 
 (define generacion2Vieja (nueva-generacion '((1 1 3 0 5 1) (1 2 7 8 9 6) (1 3 8 0 1 5) (1 4 0 7 10 6) (2 5 7 10 1 0) (2 6 4 0 0 4) (2 7 5 8 4 1) (3 8 2 5 3 3) (3 9 6 1 5 7) (3 10 1 5 10 3) (0 11 4 2 6 9)) 1))
@@ -34,6 +60,9 @@
 (define player10Y 300)
 (define player11X 430)
 (define player11Y 300)
+(define Y-equipo-1 (list 300 300 300 300 300 300 300 300 300 300 300))
+(define X-equipo-1 (colocar jugadores '() 100 500 900 1))
+(define velocidad-equipo-1 (list (list-ref (list-ref jugadores 0) 3) (list-ref (list-ref jugadores 1) 3) (list-ref (list-ref jugadores 2) 3) (list-ref (list-ref jugadores 3) 3) (list-ref (list-ref jugadores 4) 3) (list-ref (list-ref jugadores 5) 3) (list-ref (list-ref jugadores 6) 3)(list-ref (list-ref jugadores 7) 3) ))
 (define defensa 50)
 (define medio 350)
 (define delantero 550)
@@ -74,62 +103,22 @@
                    [height 800]))
   
 ; Make a button in the frame
-(define (checkPlayer)
-  (cond [(< player1Y 100)
-         (set! playerVel1 (abs playerVel1))]
-        [(> player1Y 600)
-         (set! playerVel1 (* (abs playerVel1) -1))])
-
-  (cond [(< player2Y 100)
-         (set! playerVel2 (abs playerVel2))]
-        [(> player2Y 600)
-         (set! playerVel2 (* (abs playerVel2) -1))])
-
-  (cond [(< player3Y 100)
-         (set! playerVel3 (abs playerVel3))]
-        [(> player3Y 600)
-         (set! playerVel3 (* (abs playerVel3) -1))])
-
-  (cond [(< player4Y 100)
-         (set! playerVel4 (abs playerVel4))]
-        [(> player4Y 600)
-         (set! playerVel4 (* (abs playerVel4) -1))])
-
-  (cond [(< player5Y 100)
-         (set! playerVel5 (abs playerVel5))]
-        [(> player5Y 600)
-         (set! playerVel5 (* (abs playerVel5) -1))])
-
-  (cond [(< player6Y 100)
-         (set! playerVel6 (abs playerVel6))]
-        [(> player6Y 650)
-         (set! playerVel6 (* (abs playerVel6) -1))])
-
-  (cond [(< player7Y 100)
-         (set! playerVel7 (abs playerVel7))]
-        [(> player7Y 600)
-         (set! playerVel7 (* (abs playerVel7) -1))])
-
-  (cond [(< player8Y 100)
-         (set! playerVel8 (abs playerVel8))]
-        [(> player8Y 650)
-         (set! playerVel8 (* (abs playerVel8) -1))])
-
-  (cond [(< player9Y 100)
-         (set! playerVel9 (abs playerVel9))]
-        [(> player9Y 600)
-         (set! playerVel9 (* (abs playerVel9) -1))])
-
-  (cond [(< player10Y 100)
-         (set! playerVel10 (abs playerVel10 ))]
-        [(> player10Y 600)
-         (set! playerVel10 (* (abs playerVel10) -1))])
+(define (checkPlayerAux i)
   
-  (cond [(< player11Y 100)
-         (set! playerVel11 (abs playerVel11))]
-        [(> player11Y 600)
-         (set! playerVel11 (* (abs playerVel11) -1))])
+  (cond([< i 11]
+        (cond [(< (list-ref Y-equipo-1 i) 100)
+         (set! velocidad-equipo-1 (cambiar velocidad-equipo-1 '() i
+                                           (abs (list-ref velocidad-equipo-1 i)) 0))
+         (set! playerVel1 (abs playerVel1))]
+        [(> (list-ref Y-equipo-1 i) 600)
+         (set! velocidad-equipo-1 (cambiar velocidad-equipo-1 '() i
+                                           (* (abs (list-ref velocidad-equipo-1 i)) -1) 0))
+         (set! playerVel1 (* (abs playerVel1) -1))])
+  (checkPlayerAux (+ i 1))))
   )
+
+(define (checkPlayer)
+  (checkPlayerAux 0))
 
 (define (colisionPrueba)
   (cond
@@ -171,13 +160,9 @@
                                   (thread colisionPrueba)
                                   (set! ballX (+ ballX ballVelX))
                                   (set! ballY (+ ballY ballVelY))
-                                  (set! player1Y (+ player1Y playerVel1))
-                                  (set! player2Y (+ player2Y playerVel2))
-                                  (set! player3Y (+ player3Y playerVel3))
-                                  (set! player4Y (+ player4Y playerVel4))
-                                  (set! player5Y (+ player5Y playerVel5))
-                                  (set! player6Y (+ player6Y playerVel6))
-                                  (set! player7Y (+ player7Y playerVel7))
+                                  ;(set! player1Y (+ player1Y playerVel1))
+                                  (mover-equipo-1 0)
+                                  
                                   (set! player8Y (+ player8Y playerVel8))
                                   (set! player9Y (+ player9Y playerVel9))
                                   (set! player10Y (+ player10Y playerVel10))
@@ -189,6 +174,14 @@
                          ;(set! jugadores (nueva-generacion jugadores 1))
                          
                          )])
+
+(define (mover-equipo-1 i)
+  
+  (cond ((< i 11)
+         
+        (set! Y-equipo-1 (cambiar Y-equipo-1 '() i (+ (list-ref Y-equipo-1 i) (list-ref velocidad-equipo-1 i)) 0))
+        (mover-equipo-1 (+ i 1)))
+  ))
  
 ; Make a canvas that handles events in the frame
 (define canvas
@@ -201,7 +194,7 @@
         
         (send (send canvas get-dc) erase)
         (send dc draw-rectangle 0 0 1400 800)
-        (define listaX (colocar jugadores '() 100 500 900 1))
+        
         (send dc set-brush "white" 'solid)
         (send dc set-pen "white" 0 'solid)
         
@@ -222,18 +215,7 @@
         (send dc draw-arc 1315 365 70 70 (/ pi 2) (/ (* 3 pi) 2))
         (send dc draw-arc 600 300 200 200 0 (* 2 pi))
         
-        (send dc set-pen "red" 0 'solid)
-        (send (send canvas get-dc) draw-rectangle (list-ref listaX 0) player1Y 30 30)
-        (send (send canvas get-dc) draw-rectangle (list-ref listaX 1) player2Y 30 30)
-        (send (send canvas get-dc) draw-rectangle (list-ref listaX 2) player3Y 30 30)
-        (send (send canvas get-dc) draw-rectangle (list-ref listaX 3) player4Y 30 30)
-        (send (send canvas get-dc) draw-rectangle (list-ref listaX 4) player5Y 30 30)
-        (send (send canvas get-dc) draw-rectangle (list-ref listaX 5) player6Y 30 30)
-        (send (send canvas get-dc) draw-rectangle (list-ref listaX 6) player7Y 30 30)
-        (send (send canvas get-dc) draw-rectangle (list-ref listaX 7) player8Y 30 30)
-        (send (send canvas get-dc) draw-rectangle (list-ref listaX 8) player9Y 30 30)
-        (send (send canvas get-dc) draw-rectangle (list-ref listaX 9) player10Y 30 30)
-        (send (send canvas get-dc) draw-rectangle (list-ref listaX 10) player11Y 30 30)
+        (dibujar 0 (send canvas get-dc))
         
         
         (send dc set-pen "blue" 1 'solid)
@@ -253,34 +235,18 @@
         (send dc set-pen "black" 1 'solid)
         (send (send canvas get-dc) draw-ellipse ballX ballY 20 20)
         
-        (send dc draw-text "Jugador 1" (- (list-ref listaX 0) 20) (+ player1Y 35))
+        (send dc draw-text "Jugador 1" (- (list-ref X-equipo-1 0) 20) (+ player1Y 35))
         
         
         )]
         ))
+(define (dibujar i dc)
+  (cond ((< i 11)
+         (send dc set-pen "red" 0 'solid)
+        (send dc draw-rectangle (list-ref X-equipo-1 i) (list-ref Y-equipo-1 i) 30 30)
+        (dibujar (+ i 1) dc)))
+  )
 
-
-(define (colocar equipo listaX defensa medio delantero tipo)
-  (cond [(null? equipo)
-         listaX
-         ]
-        [
-         (cond [(= (car (car equipo)) 1) 
-         ;(set! defensa (+ defensa 50))
-         (cons listaX defensa)
-         (colocar (cdr equipo) (append listaX (list defensa)) (+ defensa (* 80 tipo)) medio delantero tipo)]
-               [(= (car (car equipo)) 2) 
-                ;(set! medio (+ medio 50))
-               
-                (colocar (cdr equipo) (append listaX (list medio)) defensa (+ medio (* 80 tipo)) delantero tipo)]
-               [(= (car (car equipo)) 3)
-                ;(set! delantero (+ delantero 50))
-               
-                (colocar (cdr equipo) (append listaX (list delantero)) defensa medio (+ (* 80 tipo) delantero) tipo)]
-               [(= (car (car equipo)) 0)
-                (colocar (cdr equipo) (append listaX (list 50)) defensa medio delantero tipo)]
-               )
-         ]))
 
 
 ; Show the frame by calling its show method
