@@ -9,35 +9,35 @@
 ;(define jugador1 (new jugador% (posicion 1) (numero 1) (fuerza 1) (habilidad 1) (velocidad 7) (desplazamiento 1)))
 
 ;Define variables
-(define jugadores (agregarPosicion (crear_equipo '() 1) '() 5 2 3))
+(define jugadores (agregarPosicion (crear_equipo '() 1) '() 5 3 2))
 (define ballX 492)
 (define ballY 365)
 (define player1X 50)
-(define player1Y 340)
+(define player1Y 300)
 (define player2X 180)
-(define player2Y 340)
+(define player2Y 300)
 (define player3X 180)
-(define player3Y 500)
+(define player3Y 300)
 (define player4X 180)
-(define player4Y 180)
+(define player4Y 300)
 (define player5X 400)
-(define player5Y 100)
+(define player5Y 300)
 (define player6X 400)
-(define player6Y 600)
+(define player6Y 300)
 (define player7X 300)
-(define player7Y 100)
+(define player7Y 300)
 (define player8X 300)
-(define player8Y 600)
+(define player8Y 300)
 (define player9X 300)
-(define player9Y 340)
+(define player9Y 300)
 (define player10X 430)
-(define player10Y 380)
+(define player10Y 300)
 (define player11X 430)
-(define player11Y 280)
+(define player11Y 300)
 (define defensa 50)
 (define medio 350)
 (define delantero 550)
-(define playerVel1 3)
+(define playerVel1 (list-ref (list-ref jugadores 0) 3))
 (define playerVel2 (list-ref (list-ref jugadores 1) 3))
 (define playerVel3 (list-ref (list-ref jugadores 2) 3))
 (define playerVel4 (list-ref (list-ref jugadores 3) 3))
@@ -47,7 +47,7 @@
 (define playerVel8 (list-ref (list-ref jugadores 7) 3))
 (define playerVel9 (list-ref (list-ref jugadores 8) 3))
 (define playerVel10 (list-ref (list-ref jugadores 9) 3))
-(define playerVel11 45)
+(define playerVel11 (list-ref (list-ref jugadores 10) 3))
 
 (define ballVelX 10)
 (define ballVelY 10)
@@ -70,7 +70,7 @@
 ; Make a frame by instantiating the frame% class
 (define frame (new frame%
                    [label "WCQTec"]
-                   [width 999]
+                   [width 1400]
                    [height 800]))
   
 ; Make a button in the frame
@@ -133,7 +133,7 @@
 
 (define (colisionPrueba)
   (cond
-    ((and (> (+ ballX 11) (+ player1X 10)) (< (- ballX 11) (+ player1X 40)) (> (+ ballY 11) (+ player1Y 10)) (< (- ballY 11) (+ player1Y 40))) (disparo))
+    ((and (> (+ ballX 15) (+ player1X 10)) (< (- ballX 15) (+ player1X 40)) (> (+ ballY 15) (+ player1Y 10)) (< (- ballY 15) (+ player1Y 40))) (disparo))
     (else (quote 0))))
 
 (define (disparo)
@@ -148,7 +148,7 @@
 (define (checkBall)
   (cond [(< ballX 0)
          (set! ballVelX (abs (* ballVelX -1)))]
-        [(> ballX 920)
+        [(> ballX 1370)
          (set! ballVelX (* (abs ballVelX) -1))])
   (cond [(< ballY 0)
          (set! ballVelY (abs (* ballVelY -1)))]
@@ -164,7 +164,7 @@
                          
                          
                          (let ([i 0])
-                           (while (< i  500)
+                           (while (< i 100)
                                   (sleep/yield 0.005)
                                   (thread checkPlayer)
                                   (thread checkBall)
@@ -197,11 +197,32 @@
      [paint-callback
       (lambda (my-canvas dc)
         (send dc set-brush "green" 'solid)
-        (send dc set-pen "black" 1 'solid)
-        (send dc draw-rectangle 0 0 999 800)
+        (send dc set-pen "green" 0 'solid)
+        
         (send (send canvas get-dc) erase)
-        (define listaX (colocar jugadores '() 100 400 700))
-        (send (send canvas get-dc) draw-rectangle 0 0 999 800)
+        (send dc draw-rectangle 0 0 1400 800)
+        (define listaX (colocar jugadores '() 100 500 900 1))
+        (send dc set-brush "white" 'solid)
+        (send dc set-pen "white" 0 'solid)
+        
+        ;Dibujar el centro
+        (send dc draw-rectangle 690 0 20 800)
+        ;Dibujar la cancha izquierda
+        (send dc draw-rectangle 0 300 50 20)
+        (send dc draw-rectangle 30 300 20 200)
+        (send dc draw-rectangle 0 480 50 20)
+        ;Dibujar la cancha derecha
+        (send dc draw-rectangle 1350 300 50 20)
+        (send dc draw-rectangle 1350 300 20 200)
+        (send dc draw-rectangle 1350 480 50 20)
+        ;Dibujar medio circulo
+        (send dc set-brush "white" 'transparent)
+        (send dc set-pen "white" 4 'solid)
+        (send dc draw-arc 15 365 70 70 (/ (* 3 pi) 2) (/ pi 2))
+        (send dc draw-arc 1315 365 70 70 (/ pi 2) (/ (* 3 pi) 2))
+        (send dc draw-arc 600 300 200 200 0 (* 2 pi))
+        
+        (send dc set-pen "black" 0 'solid)
         (send (send canvas get-dc) draw-rectangle (list-ref listaX 0) player1Y 30 30)
         (send (send canvas get-dc) draw-rectangle (list-ref listaX 1) player2Y 30 30)
         (send (send canvas get-dc) draw-rectangle (list-ref listaX 2) player3Y 30 30)
@@ -213,15 +234,31 @@
         (send (send canvas get-dc) draw-rectangle (list-ref listaX 8) player9Y 30 30)
         (send (send canvas get-dc) draw-rectangle (list-ref listaX 9) player10Y 30 30)
         (send (send canvas get-dc) draw-rectangle (list-ref listaX 10) player11Y 30 30)
+        (send (send canvas get-dc) draw-ellipse ballX ballY 20 20)
+        
+        (send dc set-pen "white" 1 'solid)
+        (define listaY (colocar jugadores '() 1260 860 460 -1))
+        (send (send canvas get-dc) draw-rectangle (list-ref listaY 0) player1Y 30 30)
+        (send (send canvas get-dc) draw-rectangle (list-ref listaY 1) player2Y 30 30)
+        (send (send canvas get-dc) draw-rectangle (list-ref listaY 2) player3Y 30 30)
+        (send (send canvas get-dc) draw-rectangle (list-ref listaY 3) player4Y 30 30)
+        (send (send canvas get-dc) draw-rectangle (list-ref listaY 4) player5Y 30 30)
+        (send (send canvas get-dc) draw-rectangle (list-ref listaY 5) player6Y 30 30)
+        (send (send canvas get-dc) draw-rectangle (list-ref listaY 6) player7Y 30 30)
+        (send (send canvas get-dc) draw-rectangle (list-ref listaY 7) player8Y 30 30)
+        (send (send canvas get-dc) draw-rectangle (list-ref listaY 8) player9Y 30 30)
+        (send (send canvas get-dc) draw-rectangle (list-ref listaY 9) player10Y 30 30)
+        (send (send canvas get-dc) draw-rectangle 1320 player11Y 30 30)
+        
         
         (send dc draw-text "Jugador 1" (- (list-ref listaX 0) 20) (+ player1Y 35))
         
-        (send (send canvas get-dc) draw-ellipse ballX ballY 20 20)
+        
         )]
         ))
 
 
-(define (colocar equipo listaX defensa medio delantero)
+(define (colocar equipo listaX defensa medio delantero tipo)
   (cond [(null? equipo)
          listaX
          ]
@@ -229,17 +266,17 @@
          (cond [(= (car (car equipo)) 1) 
          ;(set! defensa (+ defensa 50))
          (cons listaX defensa)
-         (colocar (cdr equipo) (append listaX (list defensa)) (+ defensa 50) medio delantero)]
+         (colocar (cdr equipo) (append listaX (list defensa)) (+ defensa (* 80 tipo)) medio delantero tipo)]
                [(= (car (car equipo)) 2) 
                 ;(set! medio (+ medio 50))
                
-                (colocar (cdr equipo) (append listaX (list medio)) defensa (+ medio 50) delantero)]
+                (colocar (cdr equipo) (append listaX (list medio)) defensa (+ medio (* 80 tipo)) delantero tipo)]
                [(= (car (car equipo)) 3)
                 ;(set! delantero (+ delantero 50))
                
-                (colocar (cdr equipo) (append listaX (list delantero)) defensa medio (+ 50 delantero))]
+                (colocar (cdr equipo) (append listaX (list delantero)) defensa medio (+ (* 80 tipo) delantero) tipo)]
                [(= (car (car equipo)) 0)
-                (colocar (cdr equipo) (append listaX (list 50)) defensa medio delantero)]
+                (colocar (cdr equipo) (append listaX (list 50)) defensa medio delantero tipo)]
                )
          ]))
 
