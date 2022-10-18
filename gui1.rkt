@@ -37,7 +37,7 @@
 (define defensa 50)
 (define medio 350)
 (define delantero 550)
-(define playerVel1 (list-ref (list-ref jugadores 0) 3))
+(define playerVel1 0)
 (define playerVel2 (list-ref (list-ref jugadores 1) 3))
 (define playerVel3 (list-ref (list-ref jugadores 2) 3))
 (define playerVel4 (list-ref (list-ref jugadores 3) 3))
@@ -131,7 +131,18 @@
          (set! playerVel11 (* (abs playerVel11) -1))])
   )
 
-  
+(define (colisionPrueba)
+  (cond
+    ((and (> ballX player1X) (< ballX (+ player1X 30)) (> ballY player1Y) (< ballY (+ player1Y 30))) (disparo))
+    (else (quote 0))))
+
+(define (disparo)
+  (set! ballVelX 10)
+  (set! ballVelY 0)
+  (sleep 1)
+  (set! ballVelX 0)
+  (set! ballVelY 0)
+  )
          
 
 (define (checkBall)
@@ -157,6 +168,7 @@
                                   (sleep/yield 0.005)
                                   (thread checkPlayer)
                                   (thread checkBall)
+                                  (thread colisionPrueba)
                                   (set! ballX (+ ballX ballVelX))
                                   (set! ballY (+ ballY ballVelY))
                                   (set! player1Y (+ player1Y playerVel1))
@@ -188,10 +200,7 @@
         (send dc set-pen "black" 1 'solid)
         (send dc draw-rectangle 0 0 999 800)
         (send (send canvas get-dc) erase)
-        (define listaX (colocar jugadores '()))
-        (set! defensa 50)
-        (set! medio 350)
-        (set! delantero 550)
+        (define listaX (colocar jugadores '() 100 400 700))
         (send (send canvas get-dc) draw-rectangle 0 0 999 800)
         (send (send canvas get-dc) draw-rectangle (list-ref listaX 0) player1Y 30 30)
         (send (send canvas get-dc) draw-rectangle (list-ref listaX 1) player2Y 30 30)
@@ -212,25 +221,25 @@
         ))
 
 
-(define (colocar equipo listaX)
+(define (colocar equipo listaX defensa medio delantero)
   (cond [(null? equipo)
          listaX
          ]
         [
          (cond [(= (car (car equipo)) 1) 
-         (set! defensa (+ defensa 50))
+         ;(set! defensa (+ defensa 50))
          (cons listaX defensa)
-         (colocar (cdr equipo) (append listaX (list defensa)))]
+         (colocar (cdr equipo) (append listaX (list defensa)) (+ defensa 50) medio delantero)]
                [(= (car (car equipo)) 2) 
-                (set! medio (+ medio 50))
+                ;(set! medio (+ medio 50))
                
-                (colocar (cdr equipo) (append listaX (list medio)))]
+                (colocar (cdr equipo) (append listaX (list medio)) defensa (+ medio 50) delantero)]
                [(= (car (car equipo)) 3)
-                (set! delantero (+ delantero 50))
+                ;(set! delantero (+ delantero 50))
                
-                (colocar (cdr equipo) (append listaX (list delantero)))]
+                (colocar (cdr equipo) (append listaX (list delantero)) defensa medio (+ 50 delantero))]
                [(= (car (car equipo)) 0)
-                (colocar (cdr equipo) (append listaX (list 50)))]
+                (colocar (cdr equipo) (append listaX (list 50)) defensa medio delantero)]
                )
          ]))
 

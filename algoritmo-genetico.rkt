@@ -1,6 +1,6 @@
 #lang slideshow
 
-(provide nueva-generacion crear_equipo agregarPosicion)
+(provide nueva-generacion crear_equipo agregarPosicion cambiar)
 
 (define (jugador numero fuerza habilidad velocidad desplazamiento)
   (append (list numero) (list fuerza) (list habilidad) (list velocidad) (list desplazamiento))
