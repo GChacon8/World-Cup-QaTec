@@ -107,11 +107,30 @@
     ((and (null? lista1X) (null? lista2X)) 0)
     ((and (> (+ ballX 15) (+ (car lista1X) 10)) (< (- ballX 15) (+ (car lista1X) 40)) (> (+ ballY 15) (+ (car lista1Y) 10)) (< (- ballY 15) (+ (car lista1Y) 40))) (disparo fuerza habilidad 1))
     ((and (> (+ ballX 15) (+ (car lista2X) 10)) (< (- ballX 15) (+ (car lista2X) 40)) (> (+ ballY 15) (+ (car lista2Y) 10)) (< (- ballY 15) (+ (car lista2Y) 40))) (disparo fuerza habilidad -1))
-    (else (colision (car lista1X) (car lista1Y) (car lista2X) (car lista2Y) ballX ballY))
+    (else (colision (car lista1X) (car lista1Y) (car lista2X) (car lista2Y) ballX ballY))))
+
 (define (disparo equipo)
   ;(sleep/yield 0.5)
   (set! ballVelX (* equipo 3))
   (set! ballVelY 0))
+
+(define (deteccionGol)
+  (cond
+    ((and (>= (+ ballX 15) 0) (<= (+ ballX 15) 50) (>= (+ ballY 15) 370) (<= (- ballY 15) 300)) (set! col 1)
+                                                                                                                                           ;(display 1)
+                                                                                                                                           (display ballX))
+    (else (set! col 0))))
+
+(define (checkTime)
+  (let ([i 0])
+    (while (= 1  1)
+           (sleep 1)
+           (set! timeSecs (+ timeSecs 1))
+           (cond [(= timeSecs 15)
+                  (display timeSecs)
+                  (set! timeSecs 0)])
+          
+           (set! i (add1 i)))))
 
 (define (QatecAux equipo1 equipo2)
   (set! X-equipo-1 (colocar (agregarPosicion equipo1 '() 5 3 2) '() 100 500 900 1))
@@ -171,7 +190,7 @@
 (define ballX 492)
 (define ballY 365)
 ;(define velocidad-equipo-1 (crear-lista-velocidad 0 '()))
-
+(define timeSecs 0)
 (define ballVelX 10)
 (define ballVelY 10)
 (define team1Score 0)
@@ -185,21 +204,6 @@
                    [label "WCQTec"]
                    [width 1400]
                    [height 800]))
-
-
-
-(define (colisionPrueba)
-  (cond
-    ((and (> (+ ballX 15) (+ player1X 10)) (< (- ballX 15) (+ player1X 40)) (> (+ ballY 15) (+ player1Y 10)) (< (- ballY 15) (+ player1Y 40))) (disparo))
-    (else (quote 0))))
-
-(define (disparo)
-  (set! ballVelX 10)
-  (set! ballVelY 0)
-  (sleep 1)
-  (set! ballVelX 0)
-  (set! ballVelY 0)
-  )
 
 (define (checkBall)
   (cond [(< ballX 0)
