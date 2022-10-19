@@ -81,21 +81,43 @@
        (else (append (list (cons i (mutacion(reproduccion (seleccion equipo-actual (promedios equipo-actual '()) '(0 0 0 0 0) '(0 0 0 0 0) '(0 0 0 0 0)) '() 2) 0))) (nueva-generacion equipo-actual (+ i 1))))
   ))
 
+(define X-equipo-1 '())
+(define X-equipo-2 '())
+(define Y-equipo-1 (list 300 300 300 300 300 300 300 300 300 300 300))
+(define Y-equipo-2 (list 300 300 300 300 300 300 300 300 300 300 300))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 (define (QaTec formaciones generaciones)
-  (colocar (agregarPosicion (crear_equipo '() 1) '() 5 3 2) '() 100 500 900 1)
+  (send frame show #t)
   
-  
+  (QatecAux (crear_equipo '() 1) (crear_equipo '() 1))
+  (send canvas refresh-now)
   
   ;(send frame show #t)
   ;(send canvas refresh-now)
   
   )
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(define (QatecAux equipo1 equipo2)
+  (set! X-equipo-1 (colocar (agregarPosicion equipo1 '() 5 3 2) '() 100 500 900 1))
+  (set! X-equipo-2 (colocar (agregarPosicion equipo2 '() 5 3 2) '() 1260 860 460 -1))
+  (actualizar equipo1 equipo2 0)
+  )
+
+(define (actualizar equipo1 equipo2 i)
+  (cond[(< i 100)
+        (sleep/yield 0.01)
+        (set! Y-equipo-1 (mover-equipo (crear-lista-velocidad 0 '() equipo1) Y-equipo-1 0))
+        (set! Y-equipo-2 (mover-equipo (crear-lista-velocidad 0 '() equipo2) Y-equipo-2 0))
+        (send canvas refresh-now)
+        (actualizar equipo1 equipo2 (+ i 1))
+        ])
+  )
+
 
 (define (colocar equipo X-equipo defensa medio delantero tipo)
   (cond [(null? equipo)
@@ -119,45 +141,26 @@
                )
          ]))
 
-(define (crear-lista-velocidad i lista)
+(define (crear-lista-velocidad i lista equipo)
   (cond ((< i 11)
-        (crear-lista-velocidad (+ i 1) (cons (list-ref (list-ref jugadores i) 3) lista)))
+        (crear-lista-velocidad (+ i 1) (cons (list-ref (list-ref equipo i) 3) lista) equipo))
         (else lista)
   ))
 
-(define jugadores (agregarPosicion (crear_equipo '() 1) '() 4 4 2))
-(define ballX 492)
-(define ballY 365)
+(define (mover-equipo velocidad-equipo-1 Y-equipo-1 i)
+  
+  (cond ((< i 11)
+        (mover-equipo velocidad-equipo-1 (cambiar Y-equipo-1 '() i (+ (list-ref Y-equipo-1 i) (list-ref velocidad-equipo-1 i)) 0) (+ i 1)))
+        (else Y-equipo-1)))
+
+
+
 (define player1X 50)
 (define player1Y 300)
-(define player2X 180)
-(define player2Y 300)
-(define player3X 180)
-(define player3Y 300)
-(define player4X 180)
-(define player4Y 300)
-(define player5X 400)
-(define player5Y 300)
-(define player6X 400)
-(define player6Y 300)
-(define player7X 300)
-(define player7Y 300)
-(define player8X 300)
-(define player8Y 300)
-(define player9X 300)
-(define player9Y 300)
-(define player10X 430)
-(define player10Y 300)
-(define player11X 430)
-(define player11Y 300)
-(define Y-equipo-1 (list 300 300 300 300 300 300 300 300 300 300 300))
-(define Y-equipo-2 (list 300 300 300 300 300 300 300 300 300 300 300))
-(define X-equipo-1 (colocar jugadores '() 100 500 900 1))
-(define X-equipo-2 (colocar jugadores '() 1260 860 460 -1))
-(define velocidad-equipo-1 (crear-lista-velocidad 0 '()))
-(define defensa 50)
-(define medio 350)
-(define delantero 550)
+(define ballX 492)
+(define ballY 365)
+;(define velocidad-equipo-1 (crear-lista-velocidad 0 '()))
+
 (define ballVelX 10)
 (define ballVelY 10)
 (define team1Score 0)
@@ -172,22 +175,7 @@
                    [width 1400]
                    [height 800]))
 
-(define (checkPlayerAux i)
-  
-  (cond([< i 11]
-        (cond [(< (list-ref Y-equipo-1 i) 100)
-         (set! velocidad-equipo-1 (cambiar velocidad-equipo-1 '() i
-                                           (abs (list-ref velocidad-equipo-1 i)) 0))
-         ]
-        [(> (list-ref Y-equipo-1 i) 600)
-         (set! velocidad-equipo-1 (cambiar velocidad-equipo-1 '() i
-                                           (* (abs (list-ref velocidad-equipo-1 i)) -1) 0))
-         ])
-  (checkPlayerAux (+ i 1))))
-  )
 
-(define (checkPlayer)
-  (checkPlayerAux 0))
 
 (define (colisionPrueba)
   (cond
@@ -244,7 +232,7 @@
         (send dc draw-arc 1315 365 70 70 (/ pi 2) (/ (* 3 pi) 2))
         (send dc draw-arc 600 300 200 200 0 (* 2 pi))
         
-        ;(dibujar 0 (send canvas get-dc) )
+        ;(dibujar 0 (send canvas get-dc))
 
         (send dc set-brush "gray" 'solid)
         (send dc set-pen "gray" 4 'solid)
@@ -256,34 +244,25 @@
         
         (send dc set-pen "blue" 1 'solid)
         
-        (send (send canvas get-dc) draw-rectangle (list-ref X-equipo-2 0) player1Y 30 30)
-        (send (send canvas get-dc) draw-rectangle (list-ref X-equipo-2 1) player2Y 30 30)
-        (send (send canvas get-dc) draw-rectangle (list-ref X-equipo-2 2) player3Y 30 30)
-        (send (send canvas get-dc) draw-rectangle (list-ref X-equipo-2 3) player4Y 30 30)
-        (send (send canvas get-dc) draw-rectangle (list-ref X-equipo-2 4) player5Y 30 30)
-        (send (send canvas get-dc) draw-rectangle (list-ref X-equipo-2 5) player6Y 30 30)
-        (send (send canvas get-dc) draw-rectangle (list-ref X-equipo-2 6) player7Y 30 30)
-        (send (send canvas get-dc) draw-rectangle (list-ref X-equipo-2 7) player8Y 30 30)
-        (send (send canvas get-dc) draw-rectangle (list-ref X-equipo-2 8) player9Y 30 30)
-        (send (send canvas get-dc) draw-rectangle (list-ref X-equipo-2 9) player10Y 30 30)
-        (send (send canvas get-dc) draw-rectangle 1320 player11Y 30 30)
-        
         (send dc set-pen "black" 1 'solid)
         (send (send canvas get-dc) draw-ellipse ballX ballY 20 20)
+        (dibujar 0 X-equipo-1 Y-equipo-1  X-equipo-2 Y-equipo-2)
         
-        (send dc draw-text "Jugador 1" (- (list-ref X-equipo-1 0) 20) (+ player1Y 35))
+        ;(send dc draw-text "Jugador 1" (- (list-ref X-equipo-1 0) 20) (+ player1Y 35))
         
         
         )]
         ))
 
-(define (dibujar i dc X-equipo-1 Y-equipo-1  X-equipo-2 Y-equipo-2)
+(define (dibujar i X-equipo-1 Y-equipo-1  X-equipo-2 Y-equipo-2)
   (cond ((< i 11)
-         (send dc set-pen "red" 0 'solid)
-        (send dc draw-rectangle (list-ref X-equipo-1 i) (list-ref Y-equipo-1 i) 30 30)
-        (send dc set-pen "blue" 0 'solid)
-        (send dc draw-rectangle (list-ref X-equipo-2 i) (list-ref Y-equipo-2 i) 30 30)
-        (dibujar (+ i 1) dc)))
+         (send (send canvas get-dc) set-pen "red" 0 'solid)
+        (send (send canvas get-dc) draw-rectangle (list-ref X-equipo-1 i) (list-ref Y-equipo-1 i) 30 30)
+        (send (send canvas get-dc) set-pen "blue" 0 'solid)
+        (send (send canvas get-dc) draw-rectangle (list-ref X-equipo-2 i) (list-ref Y-equipo-2 i) 30 30)
+        (dibujar (+ i 1) X-equipo-1 Y-equipo-1  X-equipo-2 Y-equipo-2))
+        )
+  
   )
 
 
