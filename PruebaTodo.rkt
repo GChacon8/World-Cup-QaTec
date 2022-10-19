@@ -118,6 +118,7 @@
 
 (define (disparo equipo fuerza habilidad)
   ;(sleep/yield 0.5)
+  (display fuerza)
   (set! ballVelX (* equipo fuerza))
   (set! ballVelY (- 10 habilidad)))
 
