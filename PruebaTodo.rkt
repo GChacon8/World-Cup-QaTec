@@ -93,6 +93,9 @@
   (send frame show #t)
   
   (QatecAux (crear_equipo '() 1) (crear_equipo '() 1))
+
+  (set! ballX (+ ballX ballVelX))
+  (set! ballY (+ ballY ballVelY))
   (send canvas refresh-now)
   
   ;(send frame show #t)
@@ -103,23 +106,43 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (define (colision lista1X lista1Y lista2X lista2Y ballX ballY)
+  ;(display lista1X)
   (cond
     ((and (null? lista1X) (null? lista2X)) 0)
-    ((and (> (+ ballX 15) (+ (car lista1X) 10)) (< (- ballX 15) (+ (car lista1X) 40)) (> (+ ballY 15) (+ (car lista1Y) 10)) (< (- ballY 15) (+ (car lista1Y) 40))) (disparo fuerza habilidad 1))
-    ((and (> (+ ballX 15) (+ (car lista2X) 10)) (< (- ballX 15) (+ (car lista2X) 40)) (> (+ ballY 15) (+ (car lista2Y) 10)) (< (- ballY 15) (+ (car lista2Y) 40))) (disparo fuerza habilidad -1))
-    (else (colision (car lista1X) (car lista1Y) (car lista2X) (car lista2Y) ballX ballY))))
+    ((and (> (+ ballX 15) (+ (car lista1X) 10)) (< (- ballX 15) (+ (car lista1X) 40)) (> (+ ballY 15) (+ (car lista1Y) 10)) (< (- ballY 15) (+ (car lista1Y) 40))) (disparo 1))
+    ((and (> (+ ballX 15) (+ (car lista2X) 10)) (< (- ballX 15) (+ (car lista2X) 40)) (> (+ ballY 15) (+ (car lista2Y) 10)) (< (- ballY 15) (+ (car lista2Y) 40))) (disparo -1))
+    (else (colision (cdr lista1X) (cdr lista1Y) (cdr lista2X) (cdr lista2Y) ballX ballY))))
 
-(define (disparo equipo)
+(define (colisionAux)
+  (colision X-equipo-1 Y-equipo-1 X-equipo-2 Y-equipo-2 ballX ballY))
+
+(define (disparo equipo )
   ;(sleep/yield 0.5)
   (set! ballVelX (* equipo 3))
   (set! ballVelY 0))
 
-(define (deteccionGol)
-  (cond
-    ((and (>= (+ ballX 15) 0) (<= (+ ballX 15) 50) (>= (+ ballY 15) 370) (<= (- ballY 15) 300)) (set! col 1)
-                                                                                                                                           ;(display 1)
-                                                                                                                                           (display ballX))
-    (else (set! col 0))))
+;(define (deteccionGol)
+ ; (cond
+   ; ((and (>= (+ ballX 15) 0) (<= (+ ballX 15) 50) (>= (+ ballY 15) 370) (<= (- ballY 15) 300)) (set! col 1)
+  ;                                                                                                         (display 1)
+                                                                                                              ;(display ballX))
+ ;   (else (set! col 0))))
+
+(define (checkPlayerAux i velocidad-equipo Y-equipo)
+  (cond([< i 11]
+        (cond [(< (list-ref Y-equipo i) 100)
+         (checkPlayerAux (+ i 1) (cambiar velocidad-equipo '() i
+                                           (abs (list-ref velocidad-equipo i)) 0) Y-equipo )
+         ]
+        [(> (list-ref Y-equipo i) 600)
+         (checkPlayerAux (+ i 1) (cambiar velocidad-equipo '() i
+                                           (* (abs (list-ref velocidad-equipo i)) -1) 0) Y-equipo)
+        ]
+        [else (checkPlayerAux (+ i 1) velocidad-equipo Y-equipo) ]))
+       (else velocidad-equipo)
+       )
+  
+  )
 
 (define (checkTime)
   (let ([i 0])
@@ -135,18 +158,21 @@
 (define (QatecAux equipo1 equipo2)
   (set! X-equipo-1 (colocar (agregarPosicion equipo1 '() 5 3 2) '() 100 500 900 1))
   (set! X-equipo-2 (colocar (agregarPosicion equipo2 '() 5 3 2) '() 1260 860 460 -1))
-  (actualizar equipo1 equipo2 0)
+  (actualizar equipo1 equipo2 (crear-lista-velocidad 0 '() equipo1) (crear-lista-velocidad 0 '() equipo2) 0)
   )
 
-(define (actualizar equipo1 equipo2 i)
-  (cond[(< i 100)
+(define (actualizar equipo1 equipo2 velocidad-1 velocidad-2 i)
+  (cond[(< i 1000)
         (sleep/yield 0.01)
-        (set! Y-equipo-1 (mover-equipo (crear-lista-velocidad 0 '() equipo1) Y-equipo-1 0))
-        (set! Y-equipo-2 (mover-equipo (crear-lista-velocidad 0 '() equipo2) Y-equipo-2 0))
+        (set! Y-equipo-1 (mover-equipo velocidad-1 Y-equipo-1 0))
+        (set! Y-equipo-2 (mover-equipo velocidad-2 Y-equipo-2 0))
         (send canvas refresh-now)
-        (actualizar equipo1 equipo2 (+ i 1))
-        ])
-  )
+        (thread checkBall)
+        (thread colisionAux)
+        (set! ballX (+ ballX ballVelX))
+        (set! ballY (+ ballY ballVelY))
+        (actualizar equipo1 equipo2 (checkPlayerAux 0 velocidad-1 Y-equipo-1) (checkPlayerAux 0 velocidad-2 Y-equipo-2) (+ i 1))
+        ]))
 
 
 (define (colocar equipo X-equipo defensa medio delantero tipo)
@@ -173,7 +199,19 @@
 
 (define (crear-lista-velocidad i lista equipo)
   (cond ((< i 11)
-        (crear-lista-velocidad (+ i 1) (cons (list-ref (list-ref equipo i) 3) lista) equipo))
+        (crear-lista-velocidad (+ i 1) (cons (list-ref (list-ref equipo i) 4) lista) equipo))
+        (else lista)
+  ))
+
+(define (crear-lista-fuerza i lista equipo)
+  (cond ((< i 11)
+        (crear-lista-fuerza (+ i 1) (cons (list-ref (list-ref equipo i) 2) lista) equipo))
+        (else lista)
+  ))
+
+(define (crear-lista-habilidad i lista equipo)
+  (cond ((< i 11)
+        (crear-lista-habilidad (+ i 1) (cons (list-ref (list-ref equipo i) 3) lista) equipo))
         (else lista)
   ))
 
