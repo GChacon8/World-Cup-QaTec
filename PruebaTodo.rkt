@@ -205,7 +205,9 @@
                
                 (colocar (cdr equipo) (append X-equipo (list delantero)) defensa medio (+ (* 80 tipo) delantero) tipo)]
                [(= (car (car equipo)) 0)
-                (colocar (cdr equipo) (append X-equipo (list 50)) defensa medio delantero tipo)]
+                (cond((= tipo 1) (colocar (cdr equipo) (append X-equipo (list 50)) defensa medio delantero tipo) )
+                     (else (colocar (cdr equipo) (append X-equipo (list 1320)) defensa medio delantero tipo) ))
+]
                )
          ]))
 
