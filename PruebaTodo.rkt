@@ -145,28 +145,37 @@
     ((equal? switch #f)
      (set! switch #t)
      (while (<= timeSecs 15)
-           (sleep 1)
+           (sleep/yield 1)
            (set! timeSecs (+ timeSecs 1))
            (display timeSecs))
            )))
 
+(define(reloj i)
+  (cond[(< i 1500)
+        (sleep/yield 0.001)
+        (reloj (+ i 1))]
+       [(= i 1500) (set! timeSecs (+ timeSecs 1))
+             (display timeSecs)]))
+(define (relojaux)
+  (reloj 0))
+
 (define (QatecAux equipo1 equipo2)
   (set! X-equipo-1 (colocar (agregarPosicion equipo1 '() 5 3 2) '() 100 500 900 1))
   (set! X-equipo-2 (colocar (agregarPosicion equipo2 '() 5 3 2) '() 1260 860 460 -1))
-  (actualizar equipo1 equipo2 (crear-lista-velocidad 0 '() equipo1) (crear-lista-velocidad 0 '() equipo2) 0)
-  
+  (actualizar equipo1 equipo2 (crear-lista-velocidad 0 '() equipo1) (crear-lista-velocidad 0 '() equipo2) 0 0)
+ 
   )
 
-(define (actualizar equipo1 equipo2 velocidad-1 velocidad-2 i)
-  (cond[(< i 100)
-        (thread checkTime)
+(define (actualizar equipo1 equipo2 velocidad-1 velocidad-2 i reloj)
+  (cond[(< i 15)
         (sleep/yield 0.001)
         (set! Y-equipo-1 (mover-equipo velocidad-1 Y-equipo-1 0))
         (set! Y-equipo-2 (mover-equipo velocidad-2 Y-equipo-2 0))
         (send canvas refresh-now)
         (thread checkBall)
         (thread deteccionGol)
-        ;(thread colisionAux)
+        (cond[(= reloj 100) (display 1)
+                            (actualizar equipo1 equipo2 (checkPlayerAux 0 velocidad-1 Y-equipo-1) (checkPlayerAux 0 velocidad-2 Y-equipo-2) i 0)])
         (colision X-equipo-1 Y-equipo-1 X-equipo-2 Y-equipo-2 ballX ballY
                   (crear-lista-fuerza 0 '() equipo1)
                   (crear-lista-habilidad 0 '() equipo1)
@@ -174,7 +183,7 @@
                   (crear-lista-habilidad 0 '() equipo2))
         (set! ballX (+ ballX ballVelX))
         (set! ballY (+ ballY ballVelY))
-        (actualizar equipo1 equipo2 (checkPlayerAux 0 velocidad-1 Y-equipo-1) (checkPlayerAux 0 velocidad-2 Y-equipo-2) (+ i 1))
+        (actualizar equipo1 equipo2 (checkPlayerAux 0 velocidad-1 Y-equipo-1) (checkPlayerAux 0 velocidad-2 Y-equipo-2) i (+ reloj 1))
         ]))
 
 
@@ -321,6 +330,10 @@
         )
   
   )
-
+(define(aux)
+  (QaTec '((4 3 3) (5 3 2)) 15)
+  )
+;(thread checkTime)
+;(thread aux)
 
 (QaTec '((4 3 3) (5 3 2)) 15)
