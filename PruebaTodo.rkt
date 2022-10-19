@@ -24,7 +24,7 @@
 
 
 (define (genera_jugador numero)
-  [list(jugador numero (random 11) (random 11) (random 11) (random 11))]
+  [list(jugador numero (+ 1 (random 10)) (random 11) (random 11) (random 11))]
   )
 
 (define (crear_equipo jugadores i)
@@ -105,21 +105,21 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(define (colision lista1X lista1Y lista2X lista2Y ballX ballY)
+(define (colision lista1X lista1Y lista2X lista2Y ballX ballY fuerza1 habilidad1 fuerza2 habilidad2)
   ;(display lista1X)
   (cond
     ((and (null? lista1X) (null? lista2X)) 0)
-    ((and (> (+ ballX 15) (+ (car lista1X) 10)) (< (- ballX 15) (+ (car lista1X) 40)) (> (+ ballY 15) (+ (car lista1Y) 10)) (< (- ballY 15) (+ (car lista1Y) 40))) (disparo 1))
-    ((and (> (+ ballX 15) (+ (car lista2X) 10)) (< (- ballX 15) (+ (car lista2X) 40)) (> (+ ballY 15) (+ (car lista2Y) 10)) (< (- ballY 15) (+ (car lista2Y) 40))) (disparo -1))
-    (else (colision (cdr lista1X) (cdr lista1Y) (cdr lista2X) (cdr lista2Y) ballX ballY))))
+    ((and (> (+ ballX 15) (+ (car lista1X) 10)) (< (- ballX 15) (+ (car lista1X) 40)) (> (+ ballY 15) (+ (car lista1Y) 10)) (< (- ballY 15) (+ (car lista1Y) 40))) (disparo 1 (car fuerza1) (car habilidad1)))
+    ((and (> (+ ballX 15) (+ (car lista2X) 10)) (< (- ballX 15) (+ (car lista2X) 40)) (> (+ ballY 15) (+ (car lista2Y) 10)) (< (- ballY 15) (+ (car lista2Y) 40))) (disparo -1 (car fuerza2) (car habilidad2)))
+    (else (colision (cdr lista1X) (cdr lista1Y) (cdr lista2X) (cdr lista2Y) ballX ballY (cdr fuerza1) (cdr habilidad1) (cdr fuerza2) (cdr habilidad2)))))
 
 (define (colisionAux)
   (colision X-equipo-1 Y-equipo-1 X-equipo-2 Y-equipo-2 ballX ballY))
 
-(define (disparo equipo )
+(define (disparo equipo fuerza habilidad)
   ;(sleep/yield 0.5)
-  (set! ballVelX (* equipo 3))
-  (set! ballVelY 0))
+  (set! ballVelX (* equipo fuerza))
+  (set! ballVelY (- 10 habilidad)))
 
 ;(define (deteccionGol)
  ; (cond
@@ -168,7 +168,12 @@
         (set! Y-equipo-2 (mover-equipo velocidad-2 Y-equipo-2 0))
         (send canvas refresh-now)
         (thread checkBall)
-        (thread colisionAux)
+        ;(thread colisionAux)
+        (colision X-equipo-1 Y-equipo-1 X-equipo-2 Y-equipo-2 ballX ballY
+                  (crear-lista-fuerza 0 '() equipo1)
+                  (crear-lista-habilidad 0 '() equipo1)
+                  (crear-lista-fuerza 0 '() equipo2)
+                  (crear-lista-habilidad 0 '() equipo2))
         (set! ballX (+ ballX ballVelX))
         (set! ballY (+ ballY ballVelY))
         (actualizar equipo1 equipo2 (checkPlayerAux 0 velocidad-1 Y-equipo-1) (checkPlayerAux 0 velocidad-2 Y-equipo-2) (+ i 1))
