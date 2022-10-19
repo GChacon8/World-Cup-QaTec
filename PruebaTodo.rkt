@@ -122,7 +122,9 @@
 
 (define (deteccionGol)
   (cond
-   ((and (>= (+ ballX 15) 0) (<= (+ ballX 15) 30) (<= (+ ballY 15) 500) (>= (- ballY 15) 300)) (set! team2Score (+ team2Score 1)) (set! ballX 700))))
+   ((and (>= (+ ballX 10) 0) (<= (+ ballX 10) 30) (<= (+ ballY 10) 500) (>= (- ballY 10) 300)) (set! team2Score (+ team2Score 1)) (set! ballX 700))
+   ((and (>= (+ ballX 10) 1370) (<= (+ ballX 10) 1400) (<= (+ ballY 10) 500) (>= (- ballY 10) 300)) (set! team1Score (+ team1Score 1)) (set! ballX 700))
+   ))
 
 (define (checkPlayerAux i velocidad-equipo Y-equipo)
   (cond([< i 11]
@@ -319,10 +321,14 @@
 
 (define (dibujar i X-equipo-1 Y-equipo-1  X-equipo-2 Y-equipo-2)
   (cond ((< i 11)
-         (send (send canvas get-dc) set-pen "red" 0 'solid)
+        (send (send canvas get-dc) set-pen "red" 0 'solid)
+        (send (send canvas get-dc) set-brush "red" 'solid)
         (send (send canvas get-dc) draw-rectangle (list-ref X-equipo-1 i) (list-ref Y-equipo-1 i) 30 30)
+        (send (send canvas get-dc) draw-text (string-append "J" (number->string (+ i 1))) (+ (list-ref X-equipo-1 i) 2) (+ (list-ref Y-equipo-1 i) 35))
         (send (send canvas get-dc) set-pen "blue" 0 'solid)
+        (send (send canvas get-dc) set-brush "blue" 'solid)
         (send (send canvas get-dc) draw-rectangle (list-ref X-equipo-2 i) (list-ref Y-equipo-2 i) 30 30)
+        (send (send canvas get-dc) draw-text (string-append "J" (number->string (+ i 12))) (+ (list-ref X-equipo-2 i) 2) (+ (list-ref Y-equipo-2 i) 35))
         (dibujar (+ i 1) X-equipo-1 Y-equipo-1  X-equipo-2 Y-equipo-2))
         )
   
