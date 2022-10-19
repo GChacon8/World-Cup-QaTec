@@ -38,7 +38,7 @@
 
 (define (promedios poblacion lista-promedios)
   (cond((null? poblacion) (reverse lista-promedios))
-       (else (promedios (cdr poblacion) (cons (promedio (cddar poblacion)) lista-promedios)))))
+       (else (promedios (cdr poblacion) (cons (promedio (cdar poblacion)) lista-promedios)))))
 
 
 
@@ -53,7 +53,7 @@
 
 (define (reproduccion seleccionados hijo i)
   (cond
-    ((= i 6) (reverse hijo))
+    ((= i 5) (reverse hijo))
     (else (reproduccion seleccionados (cons (list-ref (list-ref seleccionados (random 3)) i) hijo) (+ i 1)))))
 
 
@@ -63,7 +63,7 @@
   (cond[(> i 3) hijo]
        [(= (random 3) 0)
         (cond [(= (list-ref hijo i) 10) hijo]
-              (else(cambiar hijo '() i (random 11) 0)))]
+              (else(cambiar hijo '() i (+ (random 10) 1) 0)))]
         (else (mutacion hijo (+ i 1)))
        ))
 
@@ -78,7 +78,7 @@
 
 (define(nueva-generacion equipo-actual i)
   (cond[(< 11 i) '()]
-       (else (append (list (cons i (mutacion(reproduccion (seleccion equipo-actual (promedios equipo-actual '()) '(0 0 0 0 0) '(0 0 0 0 0) '(0 0 0 0 0)) '() 2) 0))) (nueva-generacion equipo-actual (+ i 1))))
+       (else (append (list (cons i (mutacion(reproduccion (seleccion equipo-actual (promedios equipo-actual '()) '(0 0 0 0 0) '(0 0 0 0 0) '(0 0 0 0 0)) '() 1) 0))) (nueva-generacion equipo-actual (+ i 1))))
   ))
 
 (define X-equipo-1 '())
@@ -92,16 +92,21 @@
 (define (QaTec formaciones generaciones)
   (send frame show #t)
   
-  (QatecAux (crear_equipo '() 1) (crear_equipo '() 1))
+  (QatecAux (crear_equipo '() 1) (crear_equipo '() 1) generaciones)
 
   (set! ballX (+ ballX ballVelX))
   (set! ballY (+ ballY ballVelY))
   (send canvas refresh-now)
+  
+  ;(send frame show #t)
+  ;(send canvas refresh-now)
+  
   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (define (colision lista1X lista1Y lista2X lista2Y ballX ballY fuerza1 habilidad1 fuerza2 habilidad2)
+  ;(display lista1X)
   (cond
     ((and (null? lista1X) (null? lista2X)) 0)
     ((and (> (+ ballX 15) (+ (car lista1X) 10)) (< (- ballX 15) (+ (car lista1X) 40)) (> (+ ballY 15) (+ (car lista1Y) 10)) (< (- ballY 15) (+ (car lista1Y) 40))) (disparo 1 (car fuerza1) (car habilidad1)))
@@ -117,9 +122,7 @@
 
 (define (deteccionGol)
   (cond
-   ((and (>= (+ ballX 10) 0) (<= (+ ballX 10) 30) (<= (+ ballY 10) 500) (>= (- ballY 10) 300)) (set! team2Score (+ team2Score 1)) (set! ballX 700))
-   ((and (>= (+ ballX 10) 1370) (<= (+ ballX 10) 1400) (<= (+ ballY 10) 500) (>= (- ballY 10) 300)) (set! team1Score (+ team1Score 1)) (set! ballX 700))
-   ))
+   ((and (>= (+ ballX 15) 0) (<= (+ ballX 15) 30) (<= (+ ballY 15) 500) (>= (- ballY 15) 300)) (set! team2Score (+ team2Score 1)) (set! ballX 700))))
 
 (define (checkPlayerAux i velocidad-equipo Y-equipo)
   (cond([< i 11]
@@ -148,16 +151,16 @@
            )))
 
 
-(define (QatecAux equipo1 equipo2)
+(define (QatecAux equipo1 equipo2 generaciones)
   (set! X-equipo-1 (colocar (agregarPosicion equipo1 '() 5 3 2) '() 100 500 900 1))
   (set! X-equipo-2 (colocar (agregarPosicion equipo2 '() 5 3 2) '() 1260 860 460 -1))
-  (actualizar equipo1 equipo2 (crear-lista-velocidad 0 '() equipo1) (crear-lista-velocidad 0 '() equipo2) 0 0)
+  (actualizar equipo1 equipo2 (crear-lista-velocidad 0 '() equipo1) (crear-lista-velocidad 0 '() equipo2) 1 0 generaciones)
  
   )
 
-(define (actualizar equipo1 equipo2 velocidad-1 velocidad-2 i reloj)
+(define (actualizar equipo1 equipo2 velocidad-1 velocidad-2 i reloj generaciones)
   
-  (cond[(<= i 5)
+  (cond[(<= i (* 15 generaciones))
         (sleep/yield 0.001)
         (set! Y-equipo-1 (mover-equipo velocidad-1 Y-equipo-1 0))
         (set! Y-equipo-2 (mover-equipo velocidad-2 Y-equipo-2 0))
@@ -171,12 +174,15 @@
                   (crear-lista-habilidad 0 '() equipo1)
                   (crear-lista-fuerza 0 '() equipo2)
                   (crear-lista-habilidad 0 '() equipo2))
+        
         (set! ballX (+ ballX ballVelX))
         (set! ballY (+ ballY ballVelY))
         (cond[(= reloj 100)
-              (display i)
-                          (actualizar equipo1 equipo2 (checkPlayerAux 0 velocidad-1 Y-equipo-1) (checkPlayerAux 0 velocidad-2 Y-equipo-2) (+ i 1) 0)]
-             (else(actualizar equipo1 equipo2 (checkPlayerAux 0 velocidad-1 Y-equipo-1) (checkPlayerAux 0 velocidad-2 Y-equipo-2) i (+ reloj 1)) ))
+               (actualizar equipo1 equipo2 (checkPlayerAux 0 velocidad-1 Y-equipo-1) (checkPlayerAux 0 velocidad-2 Y-equipo-2) (+ i 1) 0 generaciones)]
+             [(= (remainder i 15) 0) (display "hola") (actualizar (nueva-generacion equipo1 0) (nueva-generacion equipo2 0) (checkPlayerAux 0 (crear-lista-velocidad 0 '() (nueva-generacion equipo1 0)) Y-equipo-1) (checkPlayerAux 0 (crear-lista-velocidad 0 '() (nueva-generacion equipo2 0))  Y-equipo-2) (+ i 1) reloj generaciones)]
+             (else
+              (actualizar equipo1 equipo2 (checkPlayerAux 0 velocidad-1 Y-equipo-1) (checkPlayerAux 0 velocidad-2 Y-equipo-2) i (+ reloj 1) generaciones) ))
+
         ]
        ))
 
@@ -227,6 +233,8 @@
         (mover-equipo velocidad-equipo-1 (cambiar Y-equipo-1 '() i (+ (list-ref Y-equipo-1 i) (list-ref velocidad-equipo-1 i)) 0) (+ i 1)))
         (else Y-equipo-1)))
 
+
+
 (define player1X 50)
 (define player1Y 300)
 (define ballX 492)
@@ -259,39 +267,39 @@
          (set! ballVelY (* (abs ballVelY) -1))])
   )
 
-;Se crea un objeto canvas que permite dibujar en la ventana
 (define canvas
 (new canvas% 
      [parent frame]
      [paint-callback
       (lambda (my-canvas dc)
-        ;Dibujar el fondo verde de la cancha
         (send dc set-brush "green" 'solid)
-        (send dc set-pen "green" 0 'solid)        
+        (send dc set-pen "green" 0 'solid)
+        
         (send (send canvas get-dc) erase)
         (send dc draw-rectangle 0 0 1400 800)
+        
         (send dc set-brush "white" 'solid)
         (send dc set-pen "white" 0 'solid)
         
-        ;Dibujar la línea del centro
+        ;Dibujar el centro
         (send dc draw-rectangle 690 0 20 800)
-        ;Dibujar la portería izquierda
+        ;Dibujar la cancha izquierda
         (send dc draw-rectangle 0 300 50 20)
         (send dc draw-rectangle 30 300 20 200)
         (send dc draw-rectangle 0 480 50 20)
-        ;Dibujar la portería derecha
+        ;Dibujar la cancha derecha
         (send dc draw-rectangle 1350 300 50 20)
         (send dc draw-rectangle 1350 300 20 200)
         (send dc draw-rectangle 1350 480 50 20)
-        ;Dibujar medio circulo del centro
+        ;Dibujar medio circulo
         (send dc set-brush "white" 'transparent)
         (send dc set-pen "white" 4 'solid)
         (send dc draw-arc 15 365 70 70 (/ (* 3 pi) 2) (/ pi 2))
         (send dc draw-arc 1315 365 70 70 (/ pi 2) (/ (* 3 pi) 2))
-        (send dc draw-arc 600 300 200 200 0 (* 2 pi))        
+        (send dc draw-arc 600 300 200 200 0 (* 2 pi))
+        
+        ;(dibujar 0 (send canvas get-dc))
 
-        ;Dibujar la tabla de puntuación y
-        ;los respectivos goles de cada equipo
         (send dc set-brush "gray" 'solid)
         (send dc set-pen "gray" 4 'solid)
         (send dc draw-rounded-rectangle 550 0 300 30)
@@ -299,38 +307,30 @@
         (send dc draw-text (string-append "Equipo 2:" (number->string team2Score)) 750 10)
         (send dc set-brush "white" 'transparent)
         (send dc set-pen "black" 0 'solid)
-
-        ;Se dibuja el balón
+        
         (send dc set-pen "blue" 1 'solid)
+        
         (send dc set-pen "black" 1 'solid)
         (send (send canvas get-dc) draw-ellipse ballX ballY 20 20)
-        ;Se llama a la función encargada de dibujar a los jugadores
         (dibujar 0 X-equipo-1 Y-equipo-1  X-equipo-2 Y-equipo-2)
+        
+        ;(send dc draw-text "Jugador 1" (- (list-ref X-equipo-1 0) 20) (+ player1Y 35))
+        
+        
         )]
         ))
 
 (define (dibujar i X-equipo-1 Y-equipo-1  X-equipo-2 Y-equipo-2)
   (cond ((< i 11)
-         ;Se dibuja en la cancha el primer equipo
-         ;junto a los nombres de cada jugador
          (send (send canvas get-dc) set-pen "red" 0 'solid)
-         (send (send canvas get-dc) set-brush "red" 'solid)
-         (send (send canvas get-dc) draw-rectangle (list-ref X-equipo-1 i) (list-ref Y-equipo-1 i) 30 30)
-         (send (send canvas get-dc) draw-text (string-append "J" (number->string (+ i 1))) (+ (list-ref X-equipo-1 i) 2) (+ (list-ref Y-equipo-1 i) 35))
-         ;Se dibuja en la cancha el segundo equipo
-         ;junto a los nombres de cada jugador
-         (send (send canvas get-dc) set-pen "blue" 0 'solid)
-         (send (send canvas get-dc) set-brush "blue" 'solid)
-         (send (send canvas get-dc) draw-rectangle (list-ref X-equipo-2 i) (list-ref Y-equipo-2 i) 30 30)
-         (send (send canvas get-dc) draw-text (string-append "J" (number->string (+ i 12))) (+ (list-ref X-equipo-2 i) 2) (+ (list-ref Y-equipo-2 i) 35))
-         ;Se llama a la función de manera recursiva
-         (dibujar (+ i 1) X-equipo-1 Y-equipo-1  X-equipo-2 Y-equipo-2))
+        (send (send canvas get-dc) draw-rectangle (list-ref X-equipo-1 i) (list-ref Y-equipo-1 i) 30 30)
+        (send (send canvas get-dc) set-pen "blue" 0 'solid)
+        (send (send canvas get-dc) draw-rectangle (list-ref X-equipo-2 i) (list-ref Y-equipo-2 i) 30 30)
+        (dibujar (+ i 1) X-equipo-1 Y-equipo-1  X-equipo-2 Y-equipo-2))
         )
   
   )
-(define(aux)
-  (QaTec '((4 3 3) (5 3 2)) 15)
-  )
+
 ;(thread checkTime)
 ;(thread aux)
 
