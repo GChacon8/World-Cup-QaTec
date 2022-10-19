@@ -102,6 +102,17 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(define (colision lista1X lista1Y lista2X lista2Y ballX ballY)
+  (cond
+    ((and (null? lista1X) (null? lista2X)) 0)
+    ((and (> (+ ballX 15) (+ (car lista1X) 10)) (< (- ballX 15) (+ (car lista1X) 40)) (> (+ ballY 15) (+ (car lista1Y) 10)) (< (- ballY 15) (+ (car lista1Y) 40))) (disparo fuerza habilidad 1))
+    ((and (> (+ ballX 15) (+ (car lista2X) 10)) (< (- ballX 15) (+ (car lista2X) 40)) (> (+ ballY 15) (+ (car lista2Y) 10)) (< (- ballY 15) (+ (car lista2Y) 40))) (disparo fuerza habilidad -1))
+    (else (colision (car lista1X) (car lista1Y) (car lista2X) (car lista2Y) ballX ballY))
+(define (disparo equipo)
+  ;(sleep/yield 0.5)
+  (set! ballVelX (* equipo 3))
+  (set! ballVelY 0))
+
 (define (QatecAux equipo1 equipo2)
   (set! X-equipo-1 (colocar (agregarPosicion equipo1 '() 5 3 2) '() 100 500 900 1))
   (set! X-equipo-2 (colocar (agregarPosicion equipo2 '() 5 3 2) '() 1260 860 460 -1))
