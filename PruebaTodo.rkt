@@ -117,8 +117,6 @@
   (colision X-equipo-1 Y-equipo-1 X-equipo-2 Y-equipo-2 ballX ballY))
 
 (define (disparo equipo fuerza habilidad)
-  ;(sleep/yield 0.5)
-  (display fuerza)
   (set! ballVelX (* equipo fuerza))
   (set! ballVelY (- 10 habilidad)))
 
@@ -141,27 +139,28 @@
        )
   
   )
-
+(define switch #f)
 (define (checkTime)
-  (let ([i 0])
-    (while (= 1  1)
+  (cond
+    ((equal? switch #f)
+     (set! switch #t)
+     (while (<= timeSecs 15)
            (sleep 1)
            (set! timeSecs (+ timeSecs 1))
-           (cond [(= timeSecs 15)
-                  (display timeSecs)
-                  (set! timeSecs 0)])
-          
-           (set! i (add1 i)))))
+           (display timeSecs))
+           )))
 
 (define (QatecAux equipo1 equipo2)
   (set! X-equipo-1 (colocar (agregarPosicion equipo1 '() 5 3 2) '() 100 500 900 1))
   (set! X-equipo-2 (colocar (agregarPosicion equipo2 '() 5 3 2) '() 1260 860 460 -1))
   (actualizar equipo1 equipo2 (crear-lista-velocidad 0 '() equipo1) (crear-lista-velocidad 0 '() equipo2) 0)
+  
   )
 
 (define (actualizar equipo1 equipo2 velocidad-1 velocidad-2 i)
-  (cond[(< i 1000)
-        (sleep/yield 0.0001)
+  (cond[(< i 100)
+        (thread checkTime)
+        (sleep/yield 0.001)
         (set! Y-equipo-1 (mover-equipo velocidad-1 Y-equipo-1 0))
         (set! Y-equipo-2 (mover-equipo velocidad-2 Y-equipo-2 0))
         (send canvas refresh-now)
@@ -322,7 +321,6 @@
         )
   
   )
-
 
 
 (QaTec '((4 3 3) (5 3 2)) 15)
