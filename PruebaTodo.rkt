@@ -121,12 +121,9 @@
   (set! ballVelX (* equipo fuerza))
   (set! ballVelY (- 10 habilidad)))
 
-;(define (deteccionGol)
- ; (cond
-   ; ((and (>= (+ ballX 15) 0) (<= (+ ballX 15) 50) (>= (+ ballY 15) 370) (<= (- ballY 15) 300)) (set! col 1)
-  ;                                                                                                         (display 1)
-                                                                                                              ;(display ballX))
- ;   (else (set! col 0))))
+(define (deteccionGol)
+  (cond
+   ((and (>= (+ ballX 15) 0) (<= (+ ballX 15) 30) (<= (+ ballY 15) 500) (>= (- ballY 15) 300)) (set! team2Score (+ team2Score 1)) (set! ballX 700))))
 
 (define (checkPlayerAux i velocidad-equipo Y-equipo)
   (cond([< i 11]
@@ -163,11 +160,12 @@
 
 (define (actualizar equipo1 equipo2 velocidad-1 velocidad-2 i)
   (cond[(< i 1000)
-        (sleep/yield 0.01)
+        (sleep/yield 0.0001)
         (set! Y-equipo-1 (mover-equipo velocidad-1 Y-equipo-1 0))
         (set! Y-equipo-2 (mover-equipo velocidad-2 Y-equipo-2 0))
         (send canvas refresh-now)
         (thread checkBall)
+        (thread deteccionGol)
         ;(thread colisionAux)
         (colision X-equipo-1 Y-equipo-1 X-equipo-2 Y-equipo-2 ballX ballY
                   (crear-lista-fuerza 0 '() equipo1)
@@ -204,19 +202,19 @@
 
 (define (crear-lista-velocidad i lista equipo)
   (cond ((< i 11)
-        (crear-lista-velocidad (+ i 1) (cons (list-ref (list-ref equipo i) 4) lista) equipo))
+        (crear-lista-velocidad (+ i 1) (cons (list-ref (list-ref equipo i) 3) lista) equipo))
         (else lista)
   ))
 
 (define (crear-lista-fuerza i lista equipo)
   (cond ((< i 11)
-        (crear-lista-fuerza (+ i 1) (cons (list-ref (list-ref equipo i) 2) lista) equipo))
+        (crear-lista-fuerza (+ i 1) (cons (list-ref (list-ref equipo i) 1) lista) equipo))
         (else lista)
   ))
 
 (define (crear-lista-habilidad i lista equipo)
   (cond ((< i 11)
-        (crear-lista-habilidad (+ i 1) (cons (list-ref (list-ref equipo i) 3) lista) equipo))
+        (crear-lista-habilidad (+ i 1) (cons (list-ref (list-ref equipo i) 2) lista) equipo))
         (else lista)
   ))
 
@@ -234,10 +232,11 @@
 (define ballY 365)
 ;(define velocidad-equipo-1 (crear-lista-velocidad 0 '()))
 (define timeSecs 0)
-(define ballVelX 10)
-(define ballVelY 10)
+(define ballVelX 0)
+(define ballVelY 0)
 (define team1Score 0)
 (define team2Score 0)
+(define col 0)
 
 (new style-list%)
 (define font (make-object font% 10 'modern 'normal))
