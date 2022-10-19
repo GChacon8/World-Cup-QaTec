@@ -2,6 +2,8 @@
 
 (provide nueva-generacion crear_equipo agregarPosicion cambiar)
 
+;ALG GENETICO
+
 (define (jugador numero fuerza habilidad velocidad desplazamiento)
   (append (list numero) (list fuerza) (list habilidad) (list velocidad) (list desplazamiento))
   )
@@ -16,7 +18,7 @@
 
 
 (define (genera_jugador numero)
-  [list(jugador numero (random 11) (random 11) (random 11) (random 11))]
+  [list(jugador numero (+ 1 (random 10)) (random 11) (random 11) (random 11))]
   )
 
 (define (crear_equipo jugadores i)
@@ -30,7 +32,7 @@
 
 (define (promedios poblacion lista-promedios)
   (cond((null? poblacion) (reverse lista-promedios))
-       (else (promedios (cdr poblacion) (cons (promedio (cddar poblacion)) lista-promedios)))))
+       (else (promedios (cdr poblacion) (cons (promedio (cdar poblacion)) lista-promedios)))))
 
 
 
@@ -45,7 +47,7 @@
 
 (define (reproduccion seleccionados hijo i)
   (cond
-    ((= i 6) (reverse hijo))
+    ((= i 5) (reverse hijo))
     (else (reproduccion seleccionados (cons (list-ref (list-ref seleccionados (random 3)) i) hijo) (+ i 1)))))
 
 
@@ -55,7 +57,7 @@
   (cond[(> i 3) hijo]
        [(= (random 3) 0)
         (cond [(= (list-ref hijo i) 10) hijo]
-              (else(cambiar hijo '() i (random 11) 0)))]
+              (else(cambiar hijo '() i (+ (random 10) 1) 0)))]
         (else (mutacion hijo (+ i 1)))
        ))
 
@@ -70,19 +72,5 @@
 
 (define(nueva-generacion equipo-actual i)
   (cond[(< 11 i) '()]
-       (else (append (list (cons i (mutacion(reproduccion (seleccion equipo-actual (promedios equipo-actual '()) '(0 0 0 0 0) '(0 0 0 0 0) '(0 0 0 0 0)) '() 2) 0))) (nueva-generacion equipo-actual (+ i 1))))
+       (else (append (list (cons i (mutacion(reproduccion (seleccion equipo-actual (promedios equipo-actual '()) '(0 0 0 0 0) '(0 0 0 0 0) '(0 0 0 0 0)) '() 1) 0))) (nueva-generacion equipo-actual (+ i 1))))
   ))
-
-
-;(crear_equipo '() 1)
-;(promedio(cdar (crear_equipo '() 1)))
-;(prueba '((1 3 0 5 1) (2 7 8 9 6) (3 8 0 1 5) (4 0 7 10 6) (5 7 10 1 0) (6 4 0 0 4) (7 5 8 4 1) (8 2 5 3 3) (9 6 1 5 7) (10 1 5 10 3) (11 4 2 6 9)))
-;(define lista '((1 3 0 5 1) (2 7 8 9 6) (3 8 0 1 5) (4 0 7 10 6) (5 7 10 1 0) (6 4 0 0 4) (7 5 8 4 1) (8 2 5 3 3) (9 6 1 5 7) (10 1 5 10 3) (11 4 2 6 9)))
-;(agregarPosicion lista '() 4 3 3 )
-;(promedios(agregarPosicion lista '() 4 3 3) '())
-;(seleccion listabuena (promedios listabuena '()) '(0 0 0 0 0) '(0 0 0 0 0) '(0 0 0 0 0))
-;(seleccion(crear_equipo '() 1) '(5 4) 0)
-;(reproduccion '((1 2 7 8 9 6) (1 4 0 7 10 6) (2 5 7 10 1 0)) '() 2)
-;(cambiar '(1 2 3 4) '() 2 7 0)
-;(mutacion '(0 2 6 6) 0)
-;(nueva-generacion '((1 1 3 0 5 1) (1 2 7 8 9 6) (1 3 8 0 1 5) (1 4 0 7 10 6) (2 5 7 10 1 0) (2 6 4 0 0 4) (2 7 5 8 4 1) (3 8 2 5 3 3) (3 9 6 1 5 7) (3 10 1 5 10 3) (0 11 4 2 6 9)) 1)

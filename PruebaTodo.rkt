@@ -181,7 +181,7 @@
         (set! ballY (+ ballY ballVelY))
         (cond[(= reloj 100)
                (actualizar equipo1 equipo2 (checkPlayerAux 0 velocidad-1 Y-equipo-1) (checkPlayerAux 0 velocidad-2 Y-equipo-2) (+ i 1) 0 generaciones)]
-             [(= (remainder i 15) 0) (display "hola") (actualizar (nueva-generacion equipo1 0) (nueva-generacion equipo2 0) (checkPlayerAux 0 (crear-lista-velocidad 0 '() (nueva-generacion equipo1 0)) Y-equipo-1) (checkPlayerAux 0 (crear-lista-velocidad 0 '() (nueva-generacion equipo2 0))  Y-equipo-2) (+ i 1) reloj generaciones)]
+             [(= (remainder i 15) 0) (actualizar (nueva-generacion equipo1 0) (nueva-generacion equipo2 0) (checkPlayerAux 0 (crear-lista-velocidad 0 '() (nueva-generacion equipo1 0)) Y-equipo-1) (checkPlayerAux 0 (crear-lista-velocidad 0 '() (nueva-generacion equipo2 0))  Y-equipo-2) (+ i 1) reloj generaciones)]
              (else
               (actualizar equipo1 equipo2 (checkPlayerAux 0 velocidad-1 Y-equipo-1) (checkPlayerAux 0 velocidad-2 Y-equipo-2) i (+ reloj 1) generaciones) ))
 
