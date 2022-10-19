@@ -257,8 +257,8 @@
 ; Make a frame by instantiating the frame% class
 (define frame (new frame%
                    [label "WCQTec"]
-                   [width 1400]
-                   [height 800]))
+                   [width 1420]
+                   [height 820]))
 
 (define (checkBall)
   (cond [(< ballX 0)
