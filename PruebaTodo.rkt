@@ -118,6 +118,7 @@
 
 (define (disparo equipo fuerza habilidad)
   ;(sleep/yield 0.5)
+  (display fuerza)
   (set! ballVelX (* equipo fuerza))
   (set! ballVelY (- 10 habilidad)))
 
@@ -204,19 +205,19 @@
 
 (define (crear-lista-velocidad i lista equipo)
   (cond ((< i 11)
-        (crear-lista-velocidad (+ i 1) (cons (list-ref (list-ref equipo i) 4) lista) equipo))
+        (crear-lista-velocidad (+ i 1) (cons (list-ref (list-ref equipo i) 3) lista) equipo))
         (else lista)
   ))
 
 (define (crear-lista-fuerza i lista equipo)
   (cond ((< i 11)
-        (crear-lista-fuerza (+ i 1) (cons (list-ref (list-ref equipo i) 2) lista) equipo))
+        (crear-lista-fuerza (+ i 1) (cons (list-ref (list-ref equipo i) 1) lista) equipo))
         (else lista)
   ))
 
 (define (crear-lista-habilidad i lista equipo)
   (cond ((< i 11)
-        (crear-lista-habilidad (+ i 1) (cons (list-ref (list-ref equipo i) 3) lista) equipo))
+        (crear-lista-habilidad (+ i 1) (cons (list-ref (list-ref equipo i) 2) lista) equipo))
         (else lista)
   ))
 
