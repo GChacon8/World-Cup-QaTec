@@ -97,16 +97,11 @@
   (set! ballX (+ ballX ballVelX))
   (set! ballY (+ ballY ballVelY))
   (send canvas refresh-now)
-  
-  ;(send frame show #t)
-  ;(send canvas refresh-now)
-  
   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (define (colision lista1X lista1Y lista2X lista2Y ballX ballY fuerza1 habilidad1 fuerza2 habilidad2)
-  ;(display lista1X)
   (cond
     ((and (null? lista1X) (null? lista2X)) 0)
     ((and (> (+ ballX 15) (+ (car lista1X) 10)) (< (- ballX 15) (+ (car lista1X) 40)) (> (+ ballY 15) (+ (car lista1Y) 10)) (< (- ballY 15) (+ (car lista1Y) 40))) (disparo 1 (car fuerza1) (car habilidad1)))
@@ -264,37 +259,39 @@
          (set! ballVelY (* (abs ballVelY) -1))])
   )
 
+;Se crea un objeto canvas que permite dibujar en la ventana
 (define canvas
 (new canvas% 
      [parent frame]
      [paint-callback
       (lambda (my-canvas dc)
+        ;Dibujar el fondo verde de la cancha
         (send dc set-brush "green" 'solid)
-        (send dc set-pen "green" 0 'solid)
-        
+        (send dc set-pen "green" 0 'solid)        
         (send (send canvas get-dc) erase)
         (send dc draw-rectangle 0 0 1400 800)
-        
         (send dc set-brush "white" 'solid)
         (send dc set-pen "white" 0 'solid)
         
-        ;Dibujar el centro
+        ;Dibujar la línea del centro
         (send dc draw-rectangle 690 0 20 800)
-        ;Dibujar la cancha izquierda
+        ;Dibujar la portería izquierda
         (send dc draw-rectangle 0 300 50 20)
         (send dc draw-rectangle 30 300 20 200)
         (send dc draw-rectangle 0 480 50 20)
-        ;Dibujar la cancha derecha
+        ;Dibujar la portería derecha
         (send dc draw-rectangle 1350 300 50 20)
         (send dc draw-rectangle 1350 300 20 200)
         (send dc draw-rectangle 1350 480 50 20)
-        ;Dibujar medio circulo
+        ;Dibujar medio circulo del centro
         (send dc set-brush "white" 'transparent)
         (send dc set-pen "white" 4 'solid)
         (send dc draw-arc 15 365 70 70 (/ (* 3 pi) 2) (/ pi 2))
         (send dc draw-arc 1315 365 70 70 (/ pi 2) (/ (* 3 pi) 2))
         (send dc draw-arc 600 300 200 200 0 (* 2 pi))        
 
+        ;Dibujar la tabla de puntuación y
+        ;los respectivos goles de cada equipo
         (send dc set-brush "gray" 'solid)
         (send dc set-pen "gray" 4 'solid)
         (send dc draw-rounded-rectangle 550 0 300 30)
@@ -302,26 +299,32 @@
         (send dc draw-text (string-append "Equipo 2:" (number->string team2Score)) 750 10)
         (send dc set-brush "white" 'transparent)
         (send dc set-pen "black" 0 'solid)
-        
+
+        ;Se dibuja el balón
         (send dc set-pen "blue" 1 'solid)
-        
         (send dc set-pen "black" 1 'solid)
         (send (send canvas get-dc) draw-ellipse ballX ballY 20 20)
+        ;Se llama a la función encargada de dibujar a los jugadores
         (dibujar 0 X-equipo-1 Y-equipo-1  X-equipo-2 Y-equipo-2)
         )]
         ))
 
 (define (dibujar i X-equipo-1 Y-equipo-1  X-equipo-2 Y-equipo-2)
   (cond ((< i 11)
-        (send (send canvas get-dc) set-pen "red" 0 'solid)
-        (send (send canvas get-dc) set-brush "red" 'solid)
-        (send (send canvas get-dc) draw-rectangle (list-ref X-equipo-1 i) (list-ref Y-equipo-1 i) 30 30)
-        (send (send canvas get-dc) draw-text (string-append "J" (number->string (+ i 1))) (+ (list-ref X-equipo-1 i) 2) (+ (list-ref Y-equipo-1 i) 35))
-        (send (send canvas get-dc) set-pen "blue" 0 'solid)
-        (send (send canvas get-dc) set-brush "blue" 'solid)
-        (send (send canvas get-dc) draw-rectangle (list-ref X-equipo-2 i) (list-ref Y-equipo-2 i) 30 30)
-        (send (send canvas get-dc) draw-text (string-append "J" (number->string (+ i 12))) (+ (list-ref X-equipo-2 i) 2) (+ (list-ref Y-equipo-2 i) 35))
-        (dibujar (+ i 1) X-equipo-1 Y-equipo-1  X-equipo-2 Y-equipo-2))
+         ;Se dibuja en la cancha el primer equipo
+         ;junto a los nombres de cada jugador
+         (send (send canvas get-dc) set-pen "red" 0 'solid)
+         (send (send canvas get-dc) set-brush "red" 'solid)
+         (send (send canvas get-dc) draw-rectangle (list-ref X-equipo-1 i) (list-ref Y-equipo-1 i) 30 30)
+         (send (send canvas get-dc) draw-text (string-append "J" (number->string (+ i 1))) (+ (list-ref X-equipo-1 i) 2) (+ (list-ref Y-equipo-1 i) 35))
+         ;Se dibuja en la cancha el segundo equipo
+         ;junto a los nombres de cada jugador
+         (send (send canvas get-dc) set-pen "blue" 0 'solid)
+         (send (send canvas get-dc) set-brush "blue" 'solid)
+         (send (send canvas get-dc) draw-rectangle (list-ref X-equipo-2 i) (list-ref Y-equipo-2 i) 30 30)
+         (send (send canvas get-dc) draw-text (string-append "J" (number->string (+ i 12))) (+ (list-ref X-equipo-2 i) 2) (+ (list-ref Y-equipo-2 i) 35))
+         ;Se llama a la función de manera recursiva
+         (dibujar (+ i 1) X-equipo-1 Y-equipo-1  X-equipo-2 Y-equipo-2))
         )
   
   )
