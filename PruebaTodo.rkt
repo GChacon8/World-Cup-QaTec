@@ -232,8 +232,6 @@
         (mover-equipo velocidad-equipo-1 (cambiar Y-equipo-1 '() i (+ (list-ref Y-equipo-1 i) (list-ref velocidad-equipo-1 i)) 0) (+ i 1)))
         (else Y-equipo-1)))
 
-
-
 (define player1X 50)
 (define player1Y 300)
 (define ballX 492)
@@ -295,9 +293,7 @@
         (send dc set-pen "white" 4 'solid)
         (send dc draw-arc 15 365 70 70 (/ (* 3 pi) 2) (/ pi 2))
         (send dc draw-arc 1315 365 70 70 (/ pi 2) (/ (* 3 pi) 2))
-        (send dc draw-arc 600 300 200 200 0 (* 2 pi))
-        
-        ;(dibujar 0 (send canvas get-dc))
+        (send dc draw-arc 600 300 200 200 0 (* 2 pi))        
 
         (send dc set-brush "gray" 'solid)
         (send dc set-pen "gray" 4 'solid)
@@ -312,10 +308,6 @@
         (send dc set-pen "black" 1 'solid)
         (send (send canvas get-dc) draw-ellipse ballX ballY 20 20)
         (dibujar 0 X-equipo-1 Y-equipo-1  X-equipo-2 Y-equipo-2)
-        
-        ;(send dc draw-text "Jugador 1" (- (list-ref X-equipo-1 0) 20) (+ player1Y 35))
-        
-        
         )]
         ))
 
